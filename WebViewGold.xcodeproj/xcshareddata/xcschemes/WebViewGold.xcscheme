@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1250"
+   version = "1.7">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;#!/bin/bash&#10;set -e&#10;&#10;# 1) Go to the repo root for this target&#10;cd &quot;$PROJECT_DIR&quot; || exit 0&#10;&#10;# 2) Only run if we&apos;re inside a git repo&#10;if ! git rev-parse --is-inside-work-tree &gt;/dev/null 2&gt;&amp;1; then&#10;  echo &quot;Not a git repo. Skipping auto-commit.&quot;&#10;  exit 0&#10;fi&#10;&#10;# 3) Stage changes&#10;git add -A&#10;&#10;# 4) If nothing staged, skip&#10;if git diff --staged --quiet; then&#10;  echo &quot;No changes to commit.&quot;&#10;  exit 0&#10;fi&#10;&#10;# 5) Pull build info (best-effort)&#10;SCHEME=&quot;${SCHEME_NAME:-UnknownScheme}&quot;&#10;CFG=&quot;${CONFIGURATION:-UnknownConfig}&quot;&#10;BUILD_PLIST_PATH=&quot;$(/usr/bin/find &quot;$PROJECT_DIR&quot; -name Info.plist -maxdepth 4 | head -n 1)&quot;&#10;BUILD_NUM=$(/usr/libexec/PlistBuddy -c &quot;Print :CFBundleVersion&quot; &quot;$BUILD_PLIST_PATH&quot; 2&gt;/dev/null || echo &quot;unknown&quot;)&#10;&#10;# 6) Commit and tag locally&#10;MSG=&quot;Auto-commit before build: $(date &apos;+%Y-%m-%d %H:%M:%S&apos;) | scheme: $SCHEME | config: $CFG | build: $BUILD_NUM&quot;&#10;git commit -m &quot;$MSG&quot; || exit 0&#10;TAG=&quot;prebuild-$CFG-$(date +%Y%m%d-%H%M%S)&quot;&#10;git tag -a &quot;$TAG&quot; -m &quot;$MSG&quot; || true&#10;&#10;# 7) Optionally push (won&#x2019;t fail the build if not logged in)&#10;git push &gt;/dev/null 2&gt;&amp;1 || true&#10;git push --tags &gt;/dev/null 2&gt;&amp;1 || true&#10;&#10;echo &quot;&#x2705; Git auto-commit done: $MSG&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "8171D2071F6B096F00AA7B99"
+                     BuildableName = "WebViewGold.app"
+                     BlueprintName = "WebViewGold"
+                     ReferencedContainer = "container:WebViewGold.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8171D2071F6B096F00AA7B99"
+               BuildableName = "WebViewGold.app"
+               BlueprintName = "WebViewGold"
+               ReferencedContainer = "container:WebViewGold.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8171D2071F6B096F00AA7B99"
+            BuildableName = "WebViewGold.app"
+            BlueprintName = "WebViewGold"
+            ReferencedContainer = "container:WebViewGold.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <Testables>
+      </Testables>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8171D2071F6B096F00AA7B99"
+            BuildableName = "WebViewGold.app"
+            BlueprintName = "WebViewGold"
+            ReferencedContainer = "container:WebViewGold.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8171D2071F6B096F00AA7B99"
+            BuildableName = "WebViewGold.app"
+            BlueprintName = "WebViewGold"
+            ReferencedContainer = "container:WebViewGold.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>
