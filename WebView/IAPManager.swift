@@ -9,8 +9,7 @@ class IAPManager: ObservableObject {
     
     // Your App Store product IDs
     private let productIDs: [String] = [
-        "com.playbracco.coins.100",
-        "com.playbracco.coins.500"
+        "com.playbracco.coins.100"
     ]
     
     init() {
