@@ -22,7 +22,7 @@ private func af_setInstalled(_ obj: AnyObject, _ value: Bool) {
     objc_setAssociatedObject(obj, &_afBridgeInstalledKey, NSNumber(value: value), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 }
 
-extension WebViewController: WKScriptMessageHandler {
+extension WebViewController {
 
     /// Call this AFTER a page finishes loading (e.g. from your existing didFinish).
     /// It installs the native message handler (once) and injects the JS click listeners.
