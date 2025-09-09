@@ -6,6 +6,7 @@
 import UIKit
 import WebKit
 import ObjectiveC
+import Foundation
 
 
 #if canImport(AppsFlyerLib)
@@ -269,7 +270,7 @@ private func shouldShowTabs(for url: URL?) -> Bool {
 }
 
 // MARK: - Behavior
-extension WebViewController: UITabBarDelegate {
+extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
     // Lightweight on-screen debug toast (helps when console is quiet)
     private func wvg_debugToast(_ text: String) {
         DispatchQueue.main.async {
@@ -629,6 +630,9 @@ extension WebViewController: UITabBarDelegate {
         print("WVG BottomTabs: setupBottomTabs()")
         // wvg_debugToast("Bottom tabs ready")
         guard let webView = self.webView else { return }
+
+        // Register script message handler for mode switching
+        webView.configuration.userContentController.add(self, name: "mode")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
@@ -1238,3 +1242,5 @@ extension WebViewController {
         BraccoShopSheetViewController.style = style
     }
 }
+
+
