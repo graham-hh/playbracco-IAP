@@ -856,7 +856,7 @@ extension WebViewController: UITabBarDelegate {
         // Read previously selected tab index (defaults to 0)
         let prevIndex = (getAssoc(self, &_lastSelectedIndexKey) as? NSNumber)?.intValue ?? 0
 
-        // Intercept the Shop tab: present sheet and revert selection back to previous tab
+        // Intercept the Shop tab: present sheet or full screen and revert selection back to previous tab
         if idx == 3 {
             // Revert visual selection to previous (or first if out of range)
             if let items = tabBar.items, prevIndex >= 0, prevIndex < items.count {
@@ -867,7 +867,57 @@ extension WebViewController: UITabBarDelegate {
             }
 
             // wvg_debugToast("Opening Shop")
-            presentShopSheet()
+            // Rookie mode: present ShopViewController in navigation controller; else present shop sheet
+            if UserManager.shared.isRookieMode {
+                let shopVC = ShopViewController()
+                let nav = UINavigationController(rootViewController: shopVC)
+                nav.modalPresentationStyle = .fullScreen
+                // Helper to find the top-most presenting controller reliably
+                func topMostPresenter(from root: UIViewController?) -> UIViewController? {
+                    guard let root = root else { return nil }
+                    var top = root
+                    // Follow presented chain
+                    while let presented = top.presentedViewController {
+                        top = presented
+                    }
+                    // If we ended on a UINavigationController / UITabBarController, use its visible child
+                    if let nav = top as? UINavigationController {
+                        return topMostPresenter(from: nav.visibleViewController ?? nav.topViewController)
+                    }
+                    if let tabs = top as? UITabBarController {
+                        return topMostPresenter(from: tabs.selectedViewController ?? tabs)
+                    }
+                    return top
+                }
+                DispatchQueue.main.async {
+                    var root: UIViewController? = self
+                    if root?.view.window == nil {
+                        // Fallback to the app's key window root if our view is not in a window yet
+                        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                           let win = scene.windows.first(where: { $0.isKeyWindow }) {
+                            root = win.rootViewController
+                        } else {
+                            root = UIApplication.shared.windows.first?.rootViewController
+                        }
+                    }
+                    guard let presenter = topMostPresenter(from: root) else {
+                        print("WVG BottomTabs: presentShopVC() — no presenter found")
+                        return
+                    }
+                    // Avoid double-presenting the ShopViewController
+                    if presenter.presentedViewController is UINavigationController {
+                        if let navVC = presenter.presentedViewController as? UINavigationController,
+                           navVC.viewControllers.first is ShopViewController {
+                            print("WVG BottomTabs: ShopViewController already presented")
+                            return
+                        }
+                    }
+                    print("WVG BottomTabs: presenting ShopViewController from \(type(of: presenter))")
+                    presenter.present(nav, animated: true, completion: nil)
+                }
+            } else {
+                presentShopSheet()
+            }
             return
         }
 

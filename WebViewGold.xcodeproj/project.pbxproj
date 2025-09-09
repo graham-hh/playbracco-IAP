@@ -75,6 +75,9 @@
 		695CFB212E4A6E01004FD323 /* AppsFlyerLib in Frameworks */ = {isa = PBXBuildFile; productRef = 695CFB202E4A6E01004FD323 /* AppsFlyerLib */; };
 		69604C692E4D54AC005A4D91 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 69604C682E4D54AC005A4D91 /* Zip */; };
 		69604C712E4D553D005A4D91 /* AppsFlyerLib in Frameworks */ = {isa = PBXBuildFile; productRef = 69604C702E4D553D005A4D91 /* AppsFlyerLib */; };
+		697471892E70E0540042B20D /* ShopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697471882E70E0500042B20D /* ShopViewController.swift */; };
+		6974718B2E70E0BB0042B20D /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6974718A2E70E0B60042B20D /* IAPManager.swift */; };
+		6974718D2E70E11C0042B20D /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6974718C2E70E1170042B20D /* UserManager.swift */; };
 		69DBC4642E5362AE00B85AD7 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69DBC4632E5362A700B85AD7 /* OnboardingView.swift */; };
 		69DBC4682E537B9400B85AD7 /* BNDimeDisplay.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69DBC4672E537B9400B85AD7 /* BNDimeDisplay.ttf */; };
 		69DBC46A2E53C21B00B85AD7 /* BNDimeDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69DBC4692E53C21B00B85AD7 /* BNDimeDisplay-Regular.ttf */; };
@@ -177,6 +180,9 @@
 		694A5B1B2E47A29200770E00 /* WebViewController+BottomTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+BottomTabs.swift"; sourceTree = "<group>"; };
 		695CFB192E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Bold.ttf"; sourceTree = "<group>"; };
 		695CFB1B2E4A5BDA004FD323 /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
+		697471882E70E0500042B20D /* ShopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewController.swift; sourceTree = "<group>"; };
+		6974718A2E70E0B60042B20D /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		6974718C2E70E1170042B20D /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		69DBC4632E5362A700B85AD7 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		69DBC4672E537B9400B85AD7 /* BNDimeDisplay.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BNDimeDisplay.ttf; sourceTree = "<group>"; };
 		69DBC4692E53C21B00B85AD7 /* BNDimeDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BNDimeDisplay-Regular.ttf"; sourceTree = "<group>"; };
@@ -369,6 +375,9 @@
 		8171D20A1F6B096F00AA7B99 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				6974718C2E70E1170042B20D /* UserManager.swift */,
+				6974718A2E70E0B60042B20D /* IAPManager.swift */,
+				697471882E70E0500042B20D /* ShopViewController.swift */,
 				69DBC4632E5362A700B85AD7 /* OnboardingView.swift */,
 				691B585E2E4BF30600D3C0EA /* AppsFlyer+Logging.swift */,
 				3FC779CE2D6BF1B2006198F1 /* Barcode Scanner */,
@@ -702,13 +711,16 @@
 				8171D20E1F6B096F00AA7B99 /* WebViewController.swift in Sources */,
 				3FC779D72D6BF1B2006198F1 /* State.swift in Sources */,
 				3FC779D42D6BF1B2006198F1 /* HeaderViewController.swift in Sources */,
+				697471892E70E0540042B20D /* ShopViewController.swift in Sources */,
 				7F920E12205C27600036A7ED /* String.swift in Sources */,
 				1F25A7742049C8D4008132D3 /* SVProgressHUD.m in Sources */,
 				04FCA893242E1ED200867141 /* SplashscreenVC.swift in Sources */,
 				3FC779D52D6BF1B2006198F1 /* MessageViewController.swift in Sources */,
 				3FC779D82D6BF1B2006198F1 /* TorchMode.swift in Sources */,
 				8171D20C1F6B096F00AA7B99 /* AppDelegate.swift in Sources */,
+				6974718D2E70E11C0042B20D /* UserManager.swift in Sources */,
 				1F25A7732049C8D4008132D3 /* SVIndefiniteAnimatedView.m in Sources */,
+				6974718B2E70E0BB0042B20D /* IAPManager.swift in Sources */,
 				3FC779D02D6BF1B2006198F1 /* BarcodeScannerViewController.swift in Sources */,
 				3FC779D12D6BF1B2006198F1 /* CameraViewController.swift in Sources */,
 				3FC779D32D6BF1B2006198F1 /* Functions.swift in Sources */,
