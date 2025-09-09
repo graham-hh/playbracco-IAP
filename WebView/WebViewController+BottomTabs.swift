@@ -619,6 +619,26 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         // Always apply UI hacks (hide hamburger/footer/buy-coins) if present
         wvg_applyPageHacks()
 
+        // Inject JS to detect Rookie vs Pro mode and send to iOS app
+        let detectModeJS = """
+        (function() {
+          try {
+            var mode = null;
+            var pro = document.querySelector('[data-testid="pro-button"]');
+            var rookie = document.querySelector('[data-testid="rookie-button"]');
+            if (pro && pro.innerText.toLowerCase().includes("selected")) {
+              mode = "pro";
+            } else if (rookie && rookie.innerText.toLowerCase().includes("selected")) {
+              mode = "rookie";
+            }
+            if (mode && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
+              window.webkit.messageHandlers.mode.postMessage(mode);
+            }
+          } catch(e) {}
+        })();
+        """
+        webView.evaluateJavaScript(detectModeJS, completionHandler: nil)
+
         // Only set up tabs once and only when URL matches rules
         if let done = getAssoc(self, &_hasSetupTabsKey) as? Bool, done { return }
         guard shouldShowTabs(for: webView.url) else { return }
