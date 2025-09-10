@@ -68,6 +68,7 @@
 		691B585B2E4BC6A300D3C0EA /* WebViewController+AFWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691B585A2E4BC69400D3C0EA /* WebViewController+AFWebBridge.swift */; };
 		691B585D2E4BEA3E00D3C0EA /* WebViewController+AFBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691B585C2E4BEA2B00D3C0EA /* WebViewController+AFBridge.swift */; };
 		691B585F2E4BF31100D3C0EA /* AppsFlyer+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691B585E2E4BF30600D3C0EA /* AppsFlyer+Logging.swift */; };
+		69223BA72E722C96007D6117 /* BraccoStoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 69223BA62E722C96007D6117 /* BraccoStoreKit.storekit */; };
 		693694F32E62785700A43BBD /* ShopSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 693694F22E62784B00A43BBD /* ShopSheetViewController.swift */; };
 		694A5B1C2E47A29C00770E00 /* WebViewController+BottomTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694A5B1B2E47A29200770E00 /* WebViewController+BottomTabs.swift */; };
 		695CFB1A2E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 695CFB192E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf */; };
@@ -176,6 +177,7 @@
 		691B585A2E4BC69400D3C0EA /* WebViewController+AFWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+AFWebBridge.swift"; sourceTree = "<group>"; };
 		691B585C2E4BEA2B00D3C0EA /* WebViewController+AFBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+AFBridge.swift"; sourceTree = "<group>"; };
 		691B585E2E4BF30600D3C0EA /* AppsFlyer+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppsFlyer+Logging.swift"; sourceTree = "<group>"; };
+		69223BA62E722C96007D6117 /* BraccoStoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = BraccoStoreKit.storekit; sourceTree = "<group>"; };
 		693694F22E62784B00A43BBD /* ShopSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopSheetViewController.swift; sourceTree = "<group>"; };
 		694A5B1B2E47A29200770E00 /* WebViewController+BottomTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+BottomTabs.swift"; sourceTree = "<group>"; };
 		695CFB192E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Bold.ttf"; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 			children = (
 				6974718C2E70E1170042B20D /* UserManager.swift */,
 				6974718A2E70E0B60042B20D /* IAPManager.swift */,
+				69223BA62E722C96007D6117 /* BraccoStoreKit.storekit */,
 				697471882E70E0500042B20D /* ShopViewController.swift */,
 				69DBC4632E5362A700B85AD7 /* OnboardingView.swift */,
 				691B585E2E4BF30600D3C0EA /* AppsFlyer+Logging.swift */,
@@ -562,6 +565,7 @@
 				E715B8ED297116E700A91C7B /* example.html in Resources */,
 				E715B8EF297116F500A91C7B /* images in Resources */,
 				539BC95A292CEDCB005DB38D /* AppIconAlternate3@3x.png in Resources */,
+				69223BA72E722C96007D6117 /* BraccoStoreKit.storekit in Resources */,
 				526A984E2833C808007E3B60 /* index.html in Resources */,
 				539BC955292CEDAC005DB38D /* AppIconAlternate2@3x.png in Resources */,
 				5229411B2331567D00B8ECA6 /* Main.storyboard in Resources */,
@@ -980,6 +984,9 @@
 				PRODUCT_NAME = WebViewGold;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "WebView/SVProgressHUD/WebView-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1022,6 +1029,9 @@
 				PRODUCT_NAME = WebViewGold;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "WebView/SVProgressHUD/WebView-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
