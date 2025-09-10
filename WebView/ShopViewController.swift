@@ -30,7 +30,7 @@ final class ShopViewController: UIViewController {
         }
 
         // Orange background
-        view.backgroundColor = UIColor(red: 1.0, green: 0.55, blue: 0.0, alpha: 1.0) // Orange
+        view.backgroundColor = UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0) // Orange
 
         if products.isEmpty {
             // Show "No products found" label
