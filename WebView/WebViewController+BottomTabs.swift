@@ -1265,18 +1265,3 @@ extension WebViewController {
 
 
 
-    // MARK: - WKScriptMessageHandler
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "mode" {
-            // JS sent us "rookie" or "pro"
-            if let modeStr = message.body as? String {
-                UserManager.shared.isRookieMode = (modeStr == "rookie")
-                // Debug print statements
-                if UserManager.shared.isRookieMode {
-                    print("WVG BottomTabs: Rookie mode detected (from JS)")
-                } else {
-                    print("WVG BottomTabs: Pro mode detected (from JS)")
-                }
-            }
-        }
-    }
