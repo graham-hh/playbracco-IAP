@@ -17,7 +17,26 @@ final class ShopViewController: UIViewController {
 
     // Loads products from IAPManager
     private func loadProducts() async {
-        self.products = await IAPManager.shared.products
+        // Desired product order
+        let desiredOrder = [
+            "com.playbracco.coins.2500",
+            "com.playbracco.coins.10000",
+            "com.playbracco.coins.25000",
+            "com.playbracco.coins.50000",
+            "com.playbracco.coins.125000",
+            "com.playbracco.coins.250000"
+        ]
+        let fetchedProducts = await IAPManager.shared.products
+        self.products = fetchedProducts.sorted {
+            guard
+                let idx1 = desiredOrder.firstIndex(of: $0.id),
+                let idx2 = desiredOrder.firstIndex(of: $1.id)
+            else {
+                // If not found, preserve original order
+                return false
+            }
+            return idx1 < idx2
+        }
         setupUI()
     }
 
@@ -80,8 +99,8 @@ final class ShopViewController: UIViewController {
         NSLayoutConstraint.activate([
             headerImage.topAnchor.constraint(equalTo: titleImageView.bottomAnchor, constant: 8),
             headerImage.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
-            headerImage.heightAnchor.constraint(equalToConstant: 60),
-            headerImage.widthAnchor.constraint(equalToConstant: 120)
+            headerImage.heightAnchor.constraint(equalToConstant: 120),
+            headerImage.widthAnchor.constraint(equalToConstant: 240)
         ])
 
         // --- ScrollView and Product Cards ---
