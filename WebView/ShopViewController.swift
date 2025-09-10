@@ -7,7 +7,6 @@ final class ShopViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Bracco Shop"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeTapped))
         view.backgroundColor = .systemBackground
         // Load products and build UI
@@ -58,34 +57,19 @@ final class ShopViewController: UIViewController {
             headerContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerContainer.heightAnchor.constraint(equalToConstant: 120)
+            headerContainer.heightAnchor.constraint(equalToConstant: 160)
         ])
 
-        // Close button (X)
-        let closeButton = UIButton(type: .system)
-        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        closeButton.tintColor = .white
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-        headerContainer.addSubview(closeButton)
+        // Title image view
+        let titleImageView = UIImageView(image: UIImage(named: "Purchase-Coins-Title"))
+        titleImageView.contentMode = .scaleAspectFit
+        titleImageView.translatesAutoresizingMaskIntoConstraints = false
+        headerContainer.addSubview(titleImageView)
         NSLayoutConstraint.activate([
-            closeButton.leadingAnchor.constraint(equalTo: headerContainer.leadingAnchor, constant: 16),
-            closeButton.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 8),
-            closeButton.widthAnchor.constraint(equalToConstant: 32),
-            closeButton.heightAnchor.constraint(equalToConstant: 32)
-        ])
-
-        // Title label
-        let titleLabel = UILabel()
-        titleLabel.text = "PURCHASE BRACCO COINS"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerContainer.addSubview(titleLabel)
-        NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 16)
+            titleImageView.topAnchor.constraint(equalTo: headerContainer.topAnchor, constant: 16),
+            titleImageView.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
+            titleImageView.heightAnchor.constraint(equalToConstant: 50),
+            titleImageView.widthAnchor.constraint(lessThanOrEqualToConstant: 280)
         ])
 
         // Coin header image
@@ -95,7 +79,7 @@ final class ShopViewController: UIViewController {
         headerContainer.addSubview(headerImage)
         NSLayoutConstraint.activate([
             headerImage.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
-            headerImage.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            headerImage.topAnchor.constraint(equalTo: titleImageView.bottomAnchor, constant: 12),
             headerImage.heightAnchor.constraint(equalToConstant: 36),
             headerImage.widthAnchor.constraint(equalToConstant: 80)
         ])

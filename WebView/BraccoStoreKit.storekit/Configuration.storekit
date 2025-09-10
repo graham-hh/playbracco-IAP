@@ -17,7 +17,7 @@
     {
       "displayPrice" : "1.99",
       "familyShareable" : false,
-      "internalID" : "B3C9AACF",
+      "internalID" : "D7873BFA",
       "localizations" : [
         {
           "description" : "",
@@ -25,15 +25,15 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.100",
+      "productID" : "com.playbracco.coins.2500",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "100 Bracco Coins",
+      "referenceName" : "2,500 Bracco Coins",
       "type" : "Consumable"
     },
     {
       "displayPrice" : "4.99",
       "familyShareable" : false,
-      "internalID" : "F7BBA60A",
+      "internalID" : "F4547ED0",
       "localizations" : [
         {
           "description" : "",
@@ -41,14 +41,80 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.500",
+      "productID" : "com.playbracco.coins.10000",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "500 Bracco Coins",
+      "referenceName" : "10,000 Bracco Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "53955D68",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.playbracco.coins.25000",
+      "promotionalImageID" : "7214D73F",
+      "referenceName" : "25,000 Bracco Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "0A223D6B",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.playbracco.coins.50000",
+      "promotionalImageID" : "7214D73F",
+      "referenceName" : "50,000 Bracco Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "C5508ACD",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.playbracco.coins.125000",
+      "promotionalImageID" : "7214D73F",
+      "referenceName" : "125,000 Bracco Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "99.99",
+      "familyShareable" : false,
+      "internalID" : "E8ABC1E2",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.playbracco.coins.250000",
+      "promotionalImageID" : "7214D73F",
+      "referenceName" : "250,000 Bracco Coins",
       "type" : "Consumable"
     }
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
     "_storeKitErrors" : [
       {
         "current" : null,
