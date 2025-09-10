@@ -115,7 +115,7 @@ final class ShopViewController: UIViewController {
             let card = UIView()
             card.backgroundColor = .white
             card.layer.cornerRadius = 0
-            card.layer.borderWidth = 4
+            card.layer.borderWidth = 2
             card.layer.borderColor = UIColor.black.cgColor
             card.translatesAutoresizingMaskIntoConstraints = false
             card.heightAnchor.constraint(equalToConstant: 76).isActive = true
