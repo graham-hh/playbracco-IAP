@@ -623,18 +623,45 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         let detectModeJS = """
         (function() {
           try {
-            var mode = null;
-            var pro = document.querySelector('[data-testid="pro-button"]');
-            var rookie = document.querySelector('[data-testid="rookie-button"]');
-            if (pro && pro.innerText.toLowerCase().includes("selected")) {
-              mode = "pro";
-            } else if (rookie && rookie.innerText.toLowerCase().includes("selected")) {
-              mode = "rookie";
+            if (window.__wvgModeObserverInstalled__) {
+              console.log("WVG Mode Detection: Observer already installed");
+              return;
             }
-            if (mode && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
-              window.webkit.messageHandlers.mode.postMessage(mode);
+            window.__wvgModeObserverInstalled__ = true;
+            function detectModeAndNotify() {
+              try {
+                var mode = null;
+                var pro = document.querySelector('[data-testid="pro-button"]');
+                var rookie = document.querySelector('[data-testid="rookie-button"]');
+                if (pro && pro.innerText && pro.innerText.toLowerCase().includes("selected")) {
+                  mode = "pro";
+                } else if (rookie && rookie.innerText && rookie.innerText.toLowerCase().includes("selected")) {
+                  mode = "rookie";
+                }
+                if (mode) {
+                  console.log("WVG Mode Detection: Detected mode:", mode);
+                  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
+                    window.webkit.messageHandlers.mode.postMessage(mode);
+                  }
+                } else {
+                  console.log("WVG Mode Detection: No mode detected");
+                }
+              } catch(e) {
+                console.log("WVG Mode Detection: Error in detectModeAndNotify", e);
+              }
             }
-          } catch(e) {}
+            // Initial detection
+            detectModeAndNotify();
+            // Install MutationObserver to watch for changes to pro/rookie buttons
+            var observer = new MutationObserver(function(muts) {
+              detectModeAndNotify();
+            });
+            var config = { childList: true, subtree: true, characterData: true, attributes: true };
+            observer.observe(document.body || document.documentElement, config);
+            console.log("WVG Mode Detection: MutationObserver installed");
+          } catch(e) {
+            console.log("WVG Mode Detection: Outer error", e);
+          }
         })();
         """
         webView.evaluateJavaScript(detectModeJS, completionHandler: nil)
