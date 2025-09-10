@@ -72,14 +72,14 @@ final class ShopViewController: UIViewController {
             titleImageView.widthAnchor.constraint(lessThanOrEqualToConstant: 280)
         ])
 
-        // Coin header image
+        // Coin header image (bracco_coins_header) - ensure it is visible and constrained below the title image
         let headerImage = UIImageView(image: UIImage(named: "bracco_coins_header"))
         headerImage.contentMode = .scaleAspectFit
         headerImage.translatesAutoresizingMaskIntoConstraints = false
         headerContainer.addSubview(headerImage)
         NSLayoutConstraint.activate([
-            headerImage.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
             headerImage.topAnchor.constraint(equalTo: titleImageView.bottomAnchor, constant: 8),
+            headerImage.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
             headerImage.heightAnchor.constraint(equalToConstant: 60),
             headerImage.widthAnchor.constraint(equalToConstant: 120)
         ])
@@ -114,9 +114,9 @@ final class ShopViewController: UIViewController {
             // Card container
             let card = UIView()
             card.backgroundColor = .white
-            card.layer.cornerRadius = 20
-            card.layer.borderWidth = 2
-            card.layer.borderColor = UIColor(red: 1.0, green: 0.55, blue: 0.0, alpha: 1.0).cgColor // Orange border
+            card.layer.cornerRadius = 0
+            card.layer.borderWidth = 4
+            card.layer.borderColor = UIColor.black.cgColor
             card.translatesAutoresizingMaskIntoConstraints = false
             card.heightAnchor.constraint(equalToConstant: 76).isActive = true
 
@@ -134,12 +134,14 @@ final class ShopViewController: UIViewController {
                 cardStack.bottomAnchor.constraint(equalTo: card.bottomAnchor)
             ])
 
-            // Coin icon
+            // Coin icon (left, before product name)
             let coinImage = UIImageView(image: UIImage(named: "bracco_coin_icon"))
             coinImage.contentMode = .scaleAspectFit
             coinImage.translatesAutoresizingMaskIntoConstraints = false
-            coinImage.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            coinImage.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            NSLayoutConstraint.activate([
+                coinImage.widthAnchor.constraint(equalToConstant: 40),
+                coinImage.heightAnchor.constraint(equalToConstant: 40)
+            ])
             cardStack.addArrangedSubview(coinImage)
 
             // Product name label
@@ -155,10 +157,10 @@ final class ShopViewController: UIViewController {
             // Price button (orange pill)
             let priceButton = UIButton(type: .system)
             priceButton.setTitle(product.displayPrice, for: .normal)
-            priceButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+            priceButton.titleLabel?.font = UIFont(name: "JetBrainsMono-Bold", size: 18)
             priceButton.setTitleColor(.white, for: .normal)
-            priceButton.backgroundColor = UIColor(red: 1.0, green: 0.55, blue: 0.0, alpha: 1.0)
-            priceButton.layer.cornerRadius = 18
+            priceButton.backgroundColor = UIColor(red: 0xF1/255.0, green: 0x56/255.0, blue: 0x22/255.0, alpha: 1.0) // #F15622
+            priceButton.layer.cornerRadius = 15
             priceButton.layer.masksToBounds = true
             priceButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 20)
             priceButton.setContentHuggingPriority(.required, for: .horizontal)
