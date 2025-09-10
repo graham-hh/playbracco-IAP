@@ -57,7 +57,7 @@ final class ShopViewController: UIViewController {
             headerContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerContainer.heightAnchor.constraint(equalToConstant: 160)
+            headerContainer.heightAnchor.constraint(equalToConstant: 200)
         ])
 
         // Title image view
@@ -79,9 +79,9 @@ final class ShopViewController: UIViewController {
         headerContainer.addSubview(headerImage)
         NSLayoutConstraint.activate([
             headerImage.centerXAnchor.constraint(equalTo: headerContainer.centerXAnchor),
-            headerImage.topAnchor.constraint(equalTo: titleImageView.bottomAnchor, constant: 12),
-            headerImage.heightAnchor.constraint(equalToConstant: 36),
-            headerImage.widthAnchor.constraint(equalToConstant: 80)
+            headerImage.topAnchor.constraint(equalTo: titleImageView.bottomAnchor, constant: 8),
+            headerImage.heightAnchor.constraint(equalToConstant: 60),
+            headerImage.widthAnchor.constraint(equalToConstant: 120)
         ])
 
         // --- ScrollView and Product Cards ---
