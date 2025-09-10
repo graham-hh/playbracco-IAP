@@ -7,7 +7,7 @@ final class ShopViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Removed close button for navigation; controller can now be pushed or in a tab bar
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeTapped))
         view.backgroundColor = .systemBackground
         // Load products and build UI
         Task {
@@ -195,5 +195,8 @@ final class ShopViewController: UIViewController {
         }
     }
 
+    @objc private func closeTapped() {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
  
