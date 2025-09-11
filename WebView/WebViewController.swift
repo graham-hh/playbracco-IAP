@@ -136,7 +136,7 @@ extension String {
 
 
 
-class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerViewDelegate, SKStoreProductViewControllerDelegate,SKProductsRequestDelegate, SKPaymentTransactionObserver, FBInterstitialAdDelegate, GADFullScreenContentDelegate
+class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerViewDelegate, SKStoreProductViewControllerDelegate,SKProductsRequestDelegate, SKPaymentTransactionObserver, FBInterstitialAdDelegate, GADFullScreenContentDelegate, WKUIDelegate
 {
     @IBOutlet var loadingSign: UIActivityIndicatorView!
     @IBOutlet var offlineImageView: UIImageView!
@@ -981,6 +981,10 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             break
         @unknown default:
             break
+        }
+        // Fallback: If both useragent_iphone and useragent_ipad are empty, set a default Safari iPhone UA
+        if useragent_iphone.isEqual("") && useragent_ipad.isEqual("") {
+            webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"
         }
         let defaults = UserDefaults.standard
 #if DEBUG
@@ -5594,7 +5598,7 @@ extension WebViewController {
     }
 }
 
-extension WebViewController: WKUIDelegate
+extension WebViewController
 {
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         let urllocal = navigationAction.request.url
@@ -5691,6 +5695,11 @@ extension WebViewController: WKUIDelegate
     // didFinish method should NOT be nested here; see below for its correct definition.
     
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void) {
+        if message == "Your browser is not supported" {
+            // Suppress this specific alert silently
+            completionHandler()
+            return
+        }
         if Locale.current.languageCode?.lowercased() ?? "lang_unavailable" == alternatelanguage1_langcode?.lowercased() && alternatelanguage1_langcode?.count ?? 0 > 1 {
             
             let alertController = UIAlertController(title: Constants.kAppDisplayName, message: message, preferredStyle: .alert)
@@ -5724,9 +5733,6 @@ extension WebViewController: WKUIDelegate
             UIApplication.topViewController()?.present(alertController, animated: true, completion: nil)
             
         }
-        
-        
-        
     }
     
     func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (Bool) -> Void) {
@@ -6499,4 +6505,6 @@ class PreviewItem: NSObject, QLPreviewItem {
         self.previewItemURL = previewItemURL
     }
 }
+
+
 
