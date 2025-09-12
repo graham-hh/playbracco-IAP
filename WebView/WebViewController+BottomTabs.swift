@@ -673,6 +673,31 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         """
         webView.evaluateJavaScript(detectModeJS, completionHandler: nil)
 
+        // Inject JS to detect login state and send to iOS app
+        let detectLoginJS = """
+        (function() {
+          try {
+            function detectLoginAndNotify() {
+              try {
+                var loggedIn = (typeof window.balances !== 'undefined' && typeof window.selectedBalance !== 'undefined');
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.login) {
+                  window.webkit.messageHandlers.login.postMessage(loggedIn ? "loggedIn" : "loggedOut");
+                }
+              } catch(e) {
+                // ignore
+              }
+            }
+            detectLoginAndNotify();
+            // Optionally, set up polling if login state changes dynamically:
+            if (!window.__wvgLoginIntervalInstalled__) {
+              window.__wvgLoginIntervalInstalled__ = true;
+              window.__wvgLoginInterval__ = setInterval(detectLoginAndNotify, 3000);
+            }
+          } catch(e) {}
+        })();
+        """
+        webView.evaluateJavaScript(detectLoginJS, completionHandler: nil)
+
         // Only set up tabs once and only when URL matches rules
         if let done = getAssoc(self, &_hasSetupTabsKey) as? Bool, done { return }
         guard shouldShowTabs(for: webView.url) else { return }
@@ -687,6 +712,8 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
 
         // Register script message handler for mode switching
         webView.configuration.userContentController.add(self, name: "mode")
+        // Register script message handler for login detection
+        webView.configuration.userContentController.add(self, name: "login")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
@@ -804,7 +831,7 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         webView.scrollView.verticalScrollIndicatorInsets.bottom = 0
         webView.scrollView.contentInsetAdjustmentBehavior = .never
 
-        // Remove any JS-added bottom padding from earlier runs
+        // Remove any JS-added bottom padding from earlier runsstill no
         wvg_setPageBottomPadding(visible: false)
     }
 
@@ -1256,10 +1283,12 @@ extension WebViewController {
 
 
 
-    // MARK: - WKScriptMessageHandler for Rookie/Pro mode
+    // MARK: - WKScriptMessageHandler for Rookie/Pro mode and login state
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "mode", let mode = message.body as? String {
             print("Mode updated to:", mode)
             UserManager.shared.isRookieMode = (mode == "rookie")
+        } else if message.name == "login", let loginState = message.body as? String {
+            print("Login state:", loginState)
         }
     }
