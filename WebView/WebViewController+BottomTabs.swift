@@ -623,25 +623,32 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         let detectModeJS = """
         (function() {
           try {
-            if (window.__wvgModeObserverInstalled__) {
-              console.log("WVG Mode Detection: Observer already installed");
+            if (window.__wvgModeIntervalInstalled__) {
+              console.log("WVG Mode Detection: Interval already installed");
               return;
             }
-            window.__wvgModeObserverInstalled__ = true;
+            window.__wvgModeIntervalInstalled__ = true;
             function detectModeAndNotify() {
               try {
                 var mode = null;
-                var pro = document.querySelector('[data-testid="pro-button"]');
-                var rookie = document.querySelector('[data-testid="rookie-button"]');
-                if (pro && pro.innerText && pro.innerText.toLowerCase().includes("selected")) {
-                  mode = "pro";
-                } else if (rookie && rookie.innerText && rookie.innerText.toLowerCase().includes("selected")) {
-                  mode = "rookie";
+                if (window.balances && window.selectedBalance) {
+                  var current = window.balances.find(function(b) {
+                    return b.id === window.selectedBalance;
+                  });
+                  if (current && current.name === "main") {
+                    mode = "pro";
+                  } else {
+                    mode = "rookie";
+                  }
                 }
                 if (mode) {
-                  console.log("WVG Mode Detection: Detected mode:", mode);
-                  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
-                    window.webkit.messageHandlers.mode.postMessage(mode);
+                  // Only notify if mode changed (optional: could cache last mode)
+                  if (!window.__wvgLastModeSent__ || window.__wvgLastModeSent__ !== mode) {
+                    window.__wvgLastModeSent__ = mode;
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
+                      window.webkit.messageHandlers.mode.postMessage(mode);
+                    }
+                    console.log("WVG Mode Detection: Detected mode:", mode);
                   }
                 } else {
                   console.log("WVG Mode Detection: No mode detected");
@@ -652,13 +659,9 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
             }
             // Initial detection
             detectModeAndNotify();
-            // Install MutationObserver to watch for changes to pro/rookie buttons
-            var observer = new MutationObserver(function(muts) {
-              detectModeAndNotify();
-            });
-            var config = { childList: true, subtree: true, characterData: true, attributes: true };
-            observer.observe(document.body || document.documentElement, config);
-            console.log("WVG Mode Detection: MutationObserver installed");
+            // Re-run detection every few seconds
+            window.__wvgModeInterval__ = setInterval(detectModeAndNotify, 3000);
+            console.log("WVG Mode Detection: Interval installed");
           } catch(e) {
             console.log("WVG Mode Detection: Outer error", e);
           }
