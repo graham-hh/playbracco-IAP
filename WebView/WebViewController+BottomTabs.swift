@@ -632,9 +632,7 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
               try {
                 var mode = null;
                 if (window.balances && window.selectedBalance) {
-                  var current = window.balances.find(function(b) {
-                    return b.id === window.selectedBalance;
-                  });
+                  var current = window.balances[window.selectedBalance];
                   if (current && current.name === "main") {
                     mode = "pro";
                   } else {
