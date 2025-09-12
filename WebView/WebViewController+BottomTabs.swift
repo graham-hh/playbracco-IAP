@@ -631,13 +631,19 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
             function detectModeAndNotify() {
               try {
                 var mode = null;
+                var current = null;
                 if (window.balances && window.selectedBalance !== undefined && window.selectedBalance !== null) {
-                  var current = window.balances[window.selectedBalance];
+                  current = window.balances[window.selectedBalance];
+                  // Debug log: balances, selectedBalance, current
+                  console.log("Mode check: balances=", window.balances, "selected=", window.selectedBalance, "current=", current);
                   if (current && current.name === "main") {
                     mode = "pro";
                   } else {
                     mode = "rookie";
                   }
+                } else {
+                  // Debug log even if balances/selectedBalance missing
+                  console.log("Mode check: balances=", window.balances, "selected=", window.selectedBalance, "current=", current);
                 }
                 if (mode) {
                   // Only notify if mode changed (optional: could cache last mode)
@@ -1250,3 +1256,10 @@ extension WebViewController {
 
 
 
+    // MARK: - WKScriptMessageHandler for Rookie/Pro mode
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "mode", let mode = message.body as? String {
+            print("Mode updated to:", mode)
+            UserManager.shared.isRookieMode = (mode == "rookie")
+        }
+    }
