@@ -631,7 +631,7 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
             function detectModeAndNotify() {
               try {
                 var mode = null;
-                if (window.balances && window.selectedBalance) {
+                if (window.balances && window.selectedBalance !== undefined && window.selectedBalance !== null) {
                   var current = window.balances[window.selectedBalance];
                   if (current && current.name === "main") {
                     mode = "pro";
