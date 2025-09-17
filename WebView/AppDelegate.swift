@@ -206,7 +206,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PWMessagingDelegate {
         // ✅ Present onboarding on first launch; ATT appears immediately, other prompts after CTA.
         showOnboardingIfNeeded()
 
+        // Set up navigation bar appearance
+        setupNavigationBarAppearance()
+
         return true
+    }
+
+    // MARK: - Navigation Bar Appearance
+    private func setupNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(
+            red: 0xF1/255.0,
+            green: 0x56/255.0,
+            blue: 0x22/255.0,
+            alpha: 1.0
+        )
+        let whiteAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white]
+        appearance.titleTextAttributes = whiteAttrs
+        appearance.largeTitleTextAttributes = whiteAttrs
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().tintColor = .white
     }
 
     // MARK: - Onboarding presentation (ATT at presentation time)
