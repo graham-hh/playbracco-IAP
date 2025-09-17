@@ -5,13 +5,121 @@ final class ShopViewController: UIViewController {
     // Array to hold fetched products
     private var products: [Product] = []
 
+    // Optional external provider so other code (e.g., the JS bridge) can decide Rookie/Pro
+    static var isRookieOverride: (() -> Bool)?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeTapped))
         view.backgroundColor = .systemBackground
-        // Load products and build UI
-        Task {
-            await loadProducts()
+        // Load products and build UI based on mode
+        if isRookieMode() {
+            Task {
+                await loadProducts()
+            }
+        } else {
+            setupProUI()
+        }
+    }
+
+    private func isRookieMode() -> Bool {
+        // 0) Allow an external provider to override detection
+        if let provider = ShopViewController.isRookieOverride {
+            return provider()
+        }
+
+        let defaults = UserDefaults.standard
+
+        // 1) Direct boolean flags (preferred, simplest)
+        if let flag = defaults.object(forKey: "bracco.isFreePlayMode") as? Bool {
+            return flag
+        }
+        if let flag = defaults.object(forKey: "isFreePlayMode") as? Bool {
+            return flag
+        }
+
+        // 2) Infer from selectedBalance + balances payload kept in UserDefaults
+        if let selected = defaults.object(forKey: "selectedBalance") {
+            // If selected balance is the principal "main", then it's Pro (not Rookie)
+            if let s = selected as? String, s.lowercased() == "main" {
+                return false
+            }
+
+            // Prepare candidate numeric IDs
+            let selectedIds: [Int] = {
+                if let n = selected as? Int { return [n] }
+                if let s = selected as? String, let n = Int(s) { return [n] }
+                return []
+            }()
+
+            // Try a JSON blob saved at balancesJSON
+            if let data = defaults.data(forKey: "balancesJSON"),
+               let root = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+
+                // Two shapes are supported: a dictionary keyed by id, or an array of objects
+                if let dictBalances = root["balances"] as? [String: Any] {
+                    for id in selectedIds {
+                        if let entry = dictBalances["\(id)"] as? [String: Any] {
+                            return (entry["isFreePlay"] as? Bool) == true
+                        }
+                    }
+                } else if let arrBalances = root["balances"] as? [[String: Any]] {
+                    for id in selectedIds {
+                        if let entry = arrBalances.first(where: { ($0["balanceId"] as? Int) == id }) {
+                            return (entry["isFreePlay"] as? Bool) == true
+                        }
+                    }
+                }
+            }
+        }
+
+        // Default to Pro
+        return false
+    }
+
+    private func setupProUI() {
+        // Remove all subviews (except navigation bar)
+        for subview in view.subviews {
+            subview.removeFromSuperview()
+        }
+
+        // Orange background matching rookie theme
+        view.backgroundColor = UIColor(red: 1.0, green: 0.34, blue: 0.13, alpha: 1.0) // Orange
+
+        // Label
+        let label = UILabel()
+        label.text = "Purchase Bracco Coins"
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+
+        // Button
+        let button = UIButton(type: .system)
+        button.setTitle("Open Shop", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(red: 0xF1/255.0, green: 0x56/255.0, blue: 0x22/255.0, alpha: 1.0) // #F15622
+        button.layer.cornerRadius = 15
+        button.layer.masksToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 32, bottom: 12, right: 32)
+        button.addTarget(self, action: #selector(openShopTapped), for: .touchUpInside)
+        view.addSubview(button)
+
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -30),
+
+            button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+
+    @objc private func openShopTapped() {
+        if let url = URL(string: "https://cashier.playbracco.com") {
+            UIApplication.shared.open(url)
         }
     }
 
@@ -48,7 +156,7 @@ final class ShopViewController: UIViewController {
         }
 
         // Orange background
-        view.backgroundColor = UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0) // Orange
+        view.backgroundColor = UIColor(red: 1.0, green: 0.34, blue: 0.13, alpha: 1.0) // Orange
 
         if products.isEmpty {
             // Show "No products found" label

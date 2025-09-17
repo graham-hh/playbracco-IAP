@@ -1288,6 +1288,7 @@ extension WebViewController {
         if message.name == "mode", let mode = message.body as? String {
             print("Mode updated to:", mode)
             UserManager.shared.isRookieMode = (mode == "rookie")
+            UserDefaults.standard.set((mode == "rookie"), forKey: "bracco.isFreePlayMode")
         } else if message.name == "login", let loginState = message.body as? String {
             print("Login state:", loginState)
         }
