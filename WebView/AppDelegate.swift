@@ -222,13 +222,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PWMessagingDelegate {
             blue: 0x22/255.0,
             alpha: 1.0
         )
-        let whiteAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white]
-        appearance.titleTextAttributes = whiteAttrs
-        appearance.largeTitleTextAttributes = whiteAttrs
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-        UINavigationBar.appearance().tintColor = .white
+        let titleFont = UIFont(name: "JetBrainsMono-Bold", size: 18) ?? UIFont.boldSystemFont(ofSize: 18)
+        let customAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .font: titleFont
+        ]
+        appearance.titleTextAttributes = customAttrs
+        appearance.largeTitleTextAttributes = customAttrs
+        let navBarAppearance = UINavigationBar.appearance()
+        navBarAppearance.standardAppearance = appearance
+        navBarAppearance.scrollEdgeAppearance = appearance
+        navBarAppearance.compactAppearance = appearance
+        navBarAppearance.tintColor = .white
     }
 
     // MARK: - Onboarding presentation (ATT at presentation time)
