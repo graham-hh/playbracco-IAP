@@ -385,7 +385,6 @@
 				691B585E2E4BF30600D3C0EA /* AppsFlyer+Logging.swift */,
 				3FC779CE2D6BF1B2006198F1 /* Barcode Scanner */,
 				53B8B704292CDAEF00ADBD21 /* ApplicationIcon */,
-				1F25A7662049C8BA008132D3 /* SVProgressHUD */,
 				8171D21D1F6B099E00AA7B99 /* local-www */,
 				7F920E0E205C24620036A7ED /* Handler */,
 				7F920E0C205C1DDC0036A7ED /* Network.swift */,
@@ -416,6 +415,7 @@
 		8171D21D1F6B099E00AA7B99 /* local-www */ = {
 			isa = PBXGroup;
 			children = (
+				1F25A7662049C8BA008132D3 /* SVProgressHUD */,
 				526A984C2833C808007E3B60 /* index.html */,
 				E715B8EC297116E600A91C7B /* example.html */,
 				E715B8EE297116F500A91C7B /* images */,

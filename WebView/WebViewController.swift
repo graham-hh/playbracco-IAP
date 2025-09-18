@@ -1272,7 +1272,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         // 2) Bottom sheet container
         let sheet = UIView(frame: .zero)
         sheet.translatesAutoresizingMaskIntoConstraints = false
-        sheet.backgroundColor = .systemBackground
+        sheet.backgroundColor = UIColor(red: 241/255.0, green: 86/255.0, blue: 34/255.0, alpha: 1.0) // #F15622 Orange
         sheet.layer.cornerRadius = 16
         sheet.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         sheet.layer.masksToBounds = true
