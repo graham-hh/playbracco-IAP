@@ -1160,10 +1160,22 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
                 appearance.compactInlineLayoutAppearance.normal.titleTextAttributes[.foregroundColor] = UIColor.clear
                 appearance.compactInlineLayoutAppearance.selected.titleTextAttributes[.foregroundColor] = UIColor.clear
             }
+            // Force non-translucency and remove background/shadow images
+            bar.isTranslucent = false
+            bar.backgroundImage = UIImage()
+            bar.shadowImage = UIImage()
+            bar.clipsToBounds = false
             bar.standardAppearance = appearance
-            if #available(iOS 15.0, *) { bar.scrollEdgeAppearance = appearance }
+            if #available(iOS 15.0, *) {
+                bar.scrollEdgeAppearance = appearance
+            }
         } else {
             bar.barTintColor = BottomTabStyle.backgroundColor
+            // Force non-translucency and remove background/shadow images
+            bar.isTranslucent = false
+            bar.backgroundImage = UIImage()
+            bar.shadowImage = UIImage()
+            bar.clipsToBounds = false
         }
     }
 
