@@ -36,7 +36,7 @@ private final class BraccoShopSheetViewController: UIViewController {
             let bold = UIFont(name: "JetBrainsMono-Bold", size: 20) ?? .systemFont(ofSize: 20, weight: .bold)
             let regular = UIFont(name: "JetBrainsMono-Bold", size: 16) ?? .systemFont(ofSize: 16, weight: .regular)
             return Style(
-                backgroundColor: .systemBackground,
+                backgroundColor: UIColor(red: 87/255.0, green: 22/255.0, blue: 0/255.0, alpha: 1.0),
                 titleFont: bold,
                 titleColor: .label,
                 bodyFont: regular,
