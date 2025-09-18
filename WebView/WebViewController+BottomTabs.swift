@@ -174,7 +174,7 @@ private final class BraccoShopSheetViewController: UIViewController {
 // MARK: - 🔧 STYLE CONFIG (edit these)
 private enum BottomTabStyle {
     // Colors
-    static let backgroundColor: UIColor = UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0)
+    static let backgroundColor: UIColor = UIColor(red: 1.0, green: 0.34, blue: 0.13, alpha: 1.0)
     static let selectedColor: UIColor   = .white
     static let unselectedColor: UIColor = UIColor(red: 0.34, green: 0.09, blue: 0.0, alpha: 1.0)
 
