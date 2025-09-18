@@ -371,17 +371,6 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
                 height: 0 !important;
                 opacity: 0 !important;
               }
-
-              /* Branded orange header styling */
-              header, .navbar, .topbar, [data-testid="header"] {
-                background-color: #F15622 !important;
-                color: #ffffff !important;
-                font-family: 'JetBrainsMono-Bold', monospace !important;
-              }
-              header * , .navbar * , .topbar * , [data-testid="header"] * {
-                color: #ffffff !important;
-                font-family: 'JetBrainsMono-Bold', monospace !important;
-              }
             `;
 
             var style = document.getElementById(id);
@@ -1299,7 +1288,6 @@ extension WebViewController {
         if message.name == "mode", let mode = message.body as? String {
             print("Mode updated to:", mode)
             UserManager.shared.isRookieMode = (mode == "rookie")
-            UserDefaults.standard.set((mode == "rookie"), forKey: "bracco.isFreePlayMode")
         } else if message.name == "login", let loginState = message.body as? String {
             print("Login state:", loginState)
         }
