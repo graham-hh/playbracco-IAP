@@ -1104,19 +1104,27 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
         bar.unselectedItemTintColor = BottomTabStyle.unselectedColor
         if #available(iOS 13.0, *) {
             let appearance = UITabBarAppearance()
-            BottomTabStyle.isTranslucent ? appearance.configureWithDefaultBackground()
-                                         : appearance.configureWithOpaqueBackground()
+            // Always use opaque background, never frosted/translucent
+            appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = BottomTabStyle.backgroundColor
+            appearance.backgroundEffect = nil // Disable frosted glass
+
+            // Label alignment fix: explicitly set titlePositionAdjustment for all states
+            let zeroAdjustment = UIOffset(horizontal: 0, vertical: 0)
+
             appearance.stackedLayoutAppearance.selected.iconColor = BottomTabStyle.selectedColor
             appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.selectedColor,
                 .font: BottomTabStyle.selectedFont
             ]
+            appearance.stackedLayoutAppearance.selected.titlePositionAdjustment = zeroAdjustment
             appearance.stackedLayoutAppearance.normal.iconColor = BottomTabStyle.unselectedColor
             appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.unselectedColor,
                 .font: BottomTabStyle.normalFont
             ]
+            appearance.stackedLayoutAppearance.normal.titlePositionAdjustment = zeroAdjustment
+
             // Keep iPad inline/compactInline in sync
             appearance.inlineLayoutAppearance.normal.iconColor = BottomTabStyle.unselectedColor
             appearance.inlineLayoutAppearance.selected.iconColor = BottomTabStyle.selectedColor
@@ -1124,20 +1132,26 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
                 .foregroundColor: BottomTabStyle.unselectedColor,
                 .font: BottomTabStyle.normalFont
             ]
+            appearance.inlineLayoutAppearance.normal.titlePositionAdjustment = zeroAdjustment
             appearance.inlineLayoutAppearance.selected.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.selectedColor,
                 .font: BottomTabStyle.selectedFont
             ]
+            appearance.inlineLayoutAppearance.selected.titlePositionAdjustment = zeroAdjustment
+
             appearance.compactInlineLayoutAppearance.normal.iconColor = BottomTabStyle.unselectedColor
             appearance.compactInlineLayoutAppearance.selected.iconColor = BottomTabStyle.selectedColor
             appearance.compactInlineLayoutAppearance.normal.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.unselectedColor,
                 .font: BottomTabStyle.normalFont
             ]
+            appearance.compactInlineLayoutAppearance.normal.titlePositionAdjustment = zeroAdjustment
             appearance.compactInlineLayoutAppearance.selected.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.selectedColor,
                 .font: BottomTabStyle.selectedFont
             ]
+            appearance.compactInlineLayoutAppearance.selected.titlePositionAdjustment = zeroAdjustment
+
             if BottomTabStyle.hideLabels {
                 appearance.stackedLayoutAppearance.normal.titleTextAttributes[.foregroundColor] = UIColor.clear
                 appearance.stackedLayoutAppearance.selected.titleTextAttributes[.foregroundColor] = UIColor.clear
