@@ -371,6 +371,17 @@ extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
                 height: 0 !important;
                 opacity: 0 !important;
               }
+
+              /* Branded orange header styling */
+              header, .navbar, .topbar, [data-testid="header"] {
+                background-color: #F15622 !important;
+                color: #ffffff !important;
+                font-family: 'JetBrainsMono-Bold', monospace !important;
+              }
+              header * , .navbar * , .topbar * , [data-testid="header"] * {
+                color: #ffffff !important;
+                font-family: 'JetBrainsMono-Bold', monospace !important;
+              }
             `;
 
             var style = document.getElementById(id);
