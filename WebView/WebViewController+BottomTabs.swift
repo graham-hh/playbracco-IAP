@@ -698,6 +698,26 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(detectLoginJS, completionHandler: nil)
 
+        // Inject JS to listen for pageChanged messages from the web app
+        let pageChangedListenerJS = """
+        (function() {
+          try {
+            if (!window.__wvgPageChanged__) {
+              window.__wvgPageChanged__ = function(page) {
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.pageChanged) {
+                  window.webkit.messageHandlers.pageChanged.postMessage(page);
+                }
+              };
+            }
+          } catch(e) {}
+        })();
+        """
+        webView.evaluateJavaScript(pageChangedListenerJS, completionHandler: nil)
+
+        // Register for pageChanged script message
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
+        webView.configuration.userContentController.add(self, name: "pageChanged")
+
         // Only set up tabs once and only when URL matches rules
         if let done = getAssoc(self, &_hasSetupTabsKey) as? Bool, done { return }
         guard shouldShowTabs(for: webView.url) else { return }
@@ -1279,3 +1299,35 @@ extension WebViewController {
 
 
 
+
+// MARK: - WKScriptMessageHandler for pageChanged (hide/show bottom tabs)
+extension WebViewController: WKScriptMessageHandler {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "pageChanged" {
+            guard let page = message.body as? String else { return }
+            let lowercasedPage = page.lowercased()
+            if lowercasedPage == "login" || lowercasedPage == "join" || lowercasedPage == "account" {
+                hideBottomTabs()
+            } else {
+                showBottomTabs()
+            }
+        }
+        // If you have other handlers (login/mode), let them process as well if needed.
+    }
+
+    fileprivate func hideBottomTabs() {
+        guard let bar = bottomTabBar else { return }
+        UIView.animate(withDuration: 0.22) {
+            bar.alpha = 0
+            bar.isHidden = true
+        }
+    }
+
+    fileprivate func showBottomTabs() {
+        guard let bar = bottomTabBar else { return }
+        bar.isHidden = false
+        UIView.animate(withDuration: 0.22) {
+            bar.alpha = 1
+        }
+    }
+}
