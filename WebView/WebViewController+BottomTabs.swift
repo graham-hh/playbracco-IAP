@@ -206,6 +206,7 @@ private var _lastOffsetYKey: UInt8    = 0
 private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
 private var _pageChangedBridgeKey: UInt8 = 0
+private var _hasRegisteredPageChangedKey: UInt8 = 0
 
 // Helpers
 private func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
@@ -213,6 +214,13 @@ private func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
 }
 private func setAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer, _ value: Any?) {
     objc_setAssociatedObject(obj, key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+}
+
+private func hasRegisteredPageChanged(_ obj: AnyObject) -> Bool {
+    return (getAssoc(obj, &_hasRegisteredPageChangedKey) as? Bool) ?? false
+}
+private func markRegisteredPageChanged(_ obj: AnyObject) {
+    setAssoc(obj, &_hasRegisteredPageChangedKey, true as Bool?)
 }
 
 
@@ -733,10 +741,13 @@ extension WebViewController: UITabBarDelegate {
         // Register script message handler for login detection
         webView.configuration.userContentController.add(self, name: "login")
         // Register for pageChanged script message via a dedicated bridge (avoid duplicate conformance)
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
-        let bridge = PageChangedBridge(owner: self)
-        setAssoc(self, &_pageChangedBridgeKey, bridge)
-        webView.configuration.userContentController.add(bridge, name: "pageChanged")
+        if !hasRegisteredPageChanged(self) {
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
+            let bridge = PageChangedBridge(owner: self)
+            setAssoc(self, &_pageChangedBridgeKey, bridge)
+            webView.configuration.userContentController.add(bridge, name: "pageChanged")
+            markRegisteredPageChanged(self)
+        }
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
