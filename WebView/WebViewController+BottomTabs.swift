@@ -207,6 +207,8 @@ private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
 var _pageChangedBridgeKey: UInt8 = 0
 var _hasRegisteredPageChangedKey: UInt8 = 0
+private var _hasRegisteredModeKey: UInt8 = 0
+private var _hasRegisteredLoginKey: UInt8 = 0
 
 // Helpers
 func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
@@ -221,6 +223,20 @@ private func hasRegisteredPageChanged(_ obj: AnyObject) -> Bool {
 }
 private func markRegisteredPageChanged(_ obj: AnyObject) {
     setAssoc(obj, &_hasRegisteredPageChangedKey, true as Bool?)
+}
+
+private func hasRegisteredMode(_ obj: AnyObject) -> Bool {
+    return (getAssoc(obj, &_hasRegisteredModeKey) as? Bool) ?? false
+}
+private func markRegisteredMode(_ obj: AnyObject) {
+    setAssoc(obj, &_hasRegisteredModeKey, true as Bool?)
+}
+
+private func hasRegisteredLogin(_ obj: AnyObject) -> Bool {
+    return (getAssoc(obj, &_hasRegisteredLoginKey) as? Bool) ?? false
+}
+private func markRegisteredLogin(_ obj: AnyObject) {
+    setAssoc(obj, &_hasRegisteredLoginKey, true as Bool?)
 }
 
 
@@ -737,9 +753,19 @@ extension WebViewController: UITabBarDelegate {
         guard let webView = self.webView else { return }
 
         // Register script message handler for mode switching
+        guard !hasRegisteredMode(self) else { return }
         webView.configuration.userContentController.add(self, name: "mode")
+        markRegisteredMode(self)
         // Register script message handler for login detection
+        guard !hasRegisteredLogin(self) else { return }
         webView.configuration.userContentController.add(self, name: "login")
+        markRegisteredLogin(self)
+
+        // Register pageChanged bridge handler only once
+        if !hasRegisteredPageChanged(self) {
+            webView.configuration.userContentController.add(PageChangedBridge(owner: self), name: "pageChanged")
+            markRegisteredPageChanged(self)
+        }
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
