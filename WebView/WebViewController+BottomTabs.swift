@@ -710,10 +710,6 @@ extension WebViewController: UITabBarDelegate {
         // wvg_debugToast("Bottom tabs ready")
         guard let webView = self.webView else { return }
 
-        // Register script message handler for mode switching
-        webView.configuration.userContentController.add(self, name: "mode")
-        // Register script message handler for login detection
-        webView.configuration.userContentController.add(self, name: "login")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
