@@ -715,11 +715,6 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(pageChangedListenerJS, completionHandler: nil)
 
-        // Register for pageChanged script message via a dedicated bridge (avoid duplicate conformance)
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
-        let bridge = PageChangedBridge(owner: self)
-        setAssoc(self, &_pageChangedBridgeKey, bridge)
-        webView.configuration.userContentController.add(bridge, name: "pageChanged")
 
         // Only set up tabs once and only when URL matches rules
         if let done = getAssoc(self, &_hasSetupTabsKey) as? Bool, done { return }
@@ -737,6 +732,11 @@ extension WebViewController: UITabBarDelegate {
         webView.configuration.userContentController.add(self, name: "mode")
         // Register script message handler for login detection
         webView.configuration.userContentController.add(self, name: "login")
+        // Register for pageChanged script message via a dedicated bridge (avoid duplicate conformance)
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
+        let bridge = PageChangedBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, bridge)
+        webView.configuration.userContentController.add(bridge, name: "pageChanged")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
