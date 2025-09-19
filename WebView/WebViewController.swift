@@ -790,6 +790,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
+        config.userContentController.add(self, name: "flutter_inappwebview")
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """
         (function() {
@@ -1076,6 +1077,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         webView.autoresizingMask = ([.flexibleHeight, .flexibleWidth])
         let webConfiguration = WKWebViewConfiguration()
         webConfiguration.allowsInlineMediaPlayback = true
+        webConfiguration.userContentController.add(self, name: "flutter_inappwebview")
         
         offlineImageView.isHidden = true
         loadingSign.stopAnimating()
@@ -1985,7 +1987,13 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         }
         url += urlExtUUID
         
-        let urlToLoad = URL(string: url)!
+        var finalUrlString = url
+        if finalUrlString.contains("?") {
+            finalUrlString += "&userAgent=webview"
+        } else {
+            finalUrlString += "?userAgent=webview"
+        }
+        let urlToLoad = URL(string: finalUrlString)!
         let request = URLRequest(url: urlToLoad)
         deeplinkingrequest = true
         
@@ -6208,28 +6216,25 @@ class NavigatorGeolocation: NSObject, WKScriptMessageHandler, CLLocationManagerD
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if (message.name == "listenerAdded") {
-            listenersCount += 1;
-            
+        if message.name == "listenerAdded" {
+            listenersCount += 1
             if (!locationServicesIsEnabled()) {
-                onLocationServicesIsDisabled();
+                onLocationServicesIsDisabled()
             }
             else if (authorizationStatusIsDenied(status: CLLocationManager.authorizationStatus())) {
-                onAuthorizationStatusIsDenied();
+                onAuthorizationStatusIsDenied()
             }
             else if (authorizationStatusNeedRequest(status: CLLocationManager.authorizationStatus())) {
-                onAuthorizationStatusNeedRequest();
+                onAuthorizationStatusNeedRequest()
             }
             else if (authorizationStatusIsGranted(status: CLLocationManager.authorizationStatus())) {
-                onAuthorizationStatusIsGranted();
+                onAuthorizationStatusIsGranted()
             }
-        }
-        else if (message.name == "listenerRemoved") {
-            listenersCount -= 1;
-            
+        } else if message.name == "listenerRemoved" {
+            listenersCount -= 1
             // no listener left in web view to wait for position
             if (listenersCount == 0) {
-                locationManager.stopUpdatingLocation();
+                locationManager.stopUpdatingLocation()
             }
         }
     }
@@ -6506,5 +6511,5 @@ class PreviewItem: NSObject, QLPreviewItem {
     }
 }
 
-
+// Only one userContentController implementation for WebViewController should remain, as above.
 
