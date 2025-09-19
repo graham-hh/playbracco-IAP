@@ -205,6 +205,7 @@ private var _isBarHiddenKey: UInt8    = 0
 private var _lastOffsetYKey: UInt8    = 0
 private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
+private var _pageChangedBridgeKey: UInt8 = 0
 
 // Helpers
 private func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
@@ -714,9 +715,11 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(pageChangedListenerJS, completionHandler: nil)
 
-        // Register for pageChanged script message
+        // Register for pageChanged script message via a dedicated bridge (avoid duplicate conformance)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
-        webView.configuration.userContentController.add(self, name: "pageChanged")
+        let bridge = PageChangedBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, bridge)
+        webView.configuration.userContentController.add(bridge, name: "pageChanged")
 
         // Only set up tabs once and only when URL matches rules
         if let done = getAssoc(self, &_hasSetupTabsKey) as? Bool, done { return }
@@ -730,6 +733,10 @@ extension WebViewController: UITabBarDelegate {
         // wvg_debugToast("Bottom tabs ready")
         guard let webView = self.webView else { return }
 
+        // Register script message handler for mode switching
+        webView.configuration.userContentController.add(self, name: "mode")
+        // Register script message handler for login detection
+        webView.configuration.userContentController.add(self, name: "login")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
@@ -1300,21 +1307,24 @@ extension WebViewController {
 
 
 
-// MARK: - WKScriptMessageHandler for pageChanged (hide/show bottom tabs)
-extension WebViewController: WKScriptMessageHandler {
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "pageChanged" {
-            guard let page = message.body as? String else { return }
-            let lowercasedPage = page.lowercased()
-            if lowercasedPage == "login" || lowercasedPage == "join" || lowercasedPage == "account" {
-                hideBottomTabs()
-            } else {
-                showBottomTabs()
-            }
+// MARK: - PageChanged bridge handler (avoids duplicate WKScriptMessageHandler conformance)
+private final class PageChangedBridge: NSObject, WKScriptMessageHandler {
+    weak var owner: WebViewController?
+    init(owner: WebViewController) { self.owner = owner }
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard message.name == "pageChanged" else { return }
+        guard let page = message.body as? String else { return }
+        let p = page.lowercased()
+        if p == "login" || p == "join" || p == "account" {
+            owner?.hideBottomTabs()
+        } else {
+            owner?.showBottomTabs()
         }
-        // If you have other handlers (login/mode), let them process as well if needed.
     }
+}
 
+// MARK: - Bottom tabs show/hide helpers
+extension WebViewController {
     fileprivate func hideBottomTabs() {
         guard let bar = bottomTabBar else { return }
         UIView.animate(withDuration: 0.22) {
