@@ -792,6 +792,9 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         config.userContentController.add(self, name: "flutter_inappwebview")
+        config.userContentController.add(self, name: "balances")
+        config.userContentController.add(self, name: "mode")
+        config.userContentController.add(self, name: "login")
         print("WKScriptMessageHandler 'flutter_inappwebview' attached and waiting…")
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """
