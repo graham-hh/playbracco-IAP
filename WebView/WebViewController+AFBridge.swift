@@ -10,12 +10,6 @@ private let afBridgeName = "af_event"
 
 // Strongly retain the handler via associated object so it doesn't deallocate
 private var _afHandlerKey: UInt8 = 0
-private func setAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer, _ value: Any?) {
-    objc_setAssociatedObject(obj, key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-}
-private func getAssoc<T>(_ obj: AnyObject, _ key: UnsafeRawPointer) -> T? {
-    return objc_getAssociatedObject(obj, key) as? T
-}
 
 extension WebViewController {
     /// Call this once after `webView` is created (e.g., in `viewDidLoad`)
