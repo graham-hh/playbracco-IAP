@@ -221,6 +221,8 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         if (deletecacheonexit){
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name("ApplicationWillTerminate"), object: nil)
         }
+        // Remove the pageChanged bridge handler if present
+        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
     }
     
     private let progressBar: UIProgressView = {
@@ -795,6 +797,10 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         config.userContentController.add(self, name: "balances")
         config.userContentController.add(self, name: "mode")
         config.userContentController.add(self, name: "login")
+        // Register pageChanged bridge
+        let bridge = PageChangedBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, bridge)
+        config.userContentController.add(bridge, name: "pageChanged")
         print("WKScriptMessageHandler 'flutter_inappwebview' attached and waiting…")
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """

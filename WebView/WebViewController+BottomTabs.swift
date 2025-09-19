@@ -205,14 +205,14 @@ private var _isBarHiddenKey: UInt8    = 0
 private var _lastOffsetYKey: UInt8    = 0
 private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
-private var _pageChangedBridgeKey: UInt8 = 0
-private var _hasRegisteredPageChangedKey: UInt8 = 0
+var _pageChangedBridgeKey: UInt8 = 0
+var _hasRegisteredPageChangedKey: UInt8 = 0
 
 // Helpers
-private func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
+func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
     return objc_getAssociatedObject(obj, key)
 }
-private func setAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer, _ value: Any?) {
+func setAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer, _ value: Any?) {
     objc_setAssociatedObject(obj, key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 }
 
@@ -1311,7 +1311,7 @@ extension WebViewController {
 
 
 // MARK: - PageChanged bridge handler (avoids duplicate WKScriptMessageHandler conformance)
-private final class PageChangedBridge: NSObject, WKScriptMessageHandler {
+final class PageChangedBridge: NSObject, WKScriptMessageHandler {
     weak var owner: WebViewController?
     init(owner: WebViewController) { self.owner = owner }
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -1345,19 +1345,3 @@ extension WebViewController {
     }
 }
 
-// MARK: - Register pageChanged bridge in viewDidLoad and clean up in deinit
-extension WebViewController {
-    // Ensure this is only added if not already present
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-        // Register the pageChanged bridge handler once
-        let bridge = PageChangedBridge(owner: self)
-        setAssoc(self, &_pageChangedBridgeKey, bridge)
-        webView.configuration.userContentController.add(bridge, name: "pageChanged")
-    }
-
-    deinit {
-        // Remove the script message handler for pageChanged
-        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
-    }
-}
