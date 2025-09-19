@@ -75,8 +75,7 @@ extension WebViewController {
         webView?.evaluateJavaScript(js, completionHandler: nil)
     }
 
-    /// Receives messages from the injected JS and logs AppsFlyer events.
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    internal func handleAFBridgeMessage(_ message: WKScriptMessage) {
         guard message.name == "afBridge" else { return }
         #if canImport(AppsFlyerLib)
         guard let payload = message.body as? [String: Any],
@@ -89,7 +88,6 @@ extension WebViewController {
         default:                eventName = "af_web_other_click"
         }
 
-        // Send the payload through so you get context (href, path, ts, etc.)
         AppsFlyerLib.shared().logEvent(name: eventName, values: payload)
         #endif
     }

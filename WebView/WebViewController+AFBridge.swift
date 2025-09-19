@@ -17,33 +17,6 @@ private func getAssoc<T>(_ obj: AnyObject, _ key: UnsafeRawPointer) -> T? {
     return objc_getAssociatedObject(obj, key) as? T
 }
 
-// A tiny standalone handler so the view controller doesn't have to conform
-private final class AFScriptHandler: NSObject, WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController,
-                               didReceive message: WKScriptMessage) {
-        guard message.name == afBridgeName else { return }
-
-        // Expecting { name: String, params: Object }
-        if let dict = message.body as? [String: Any],
-           let name = dict["name"] as? String {
-
-            let params = dict["params"] as? [String: Any] ?? [:]
-
-            // Optional normalization of common web events
-            let normalizedName: String
-            switch name {
-            case "login":               normalizedName = AFEventName.webLogin
-            case "join_now", "signup":  normalizedName = AFEventName.webJoin
-            case "cta_click":           normalizedName = AFEventName.webCTAClick
-            case "web_screen_view":     normalizedName = AFEventName.webScreenView
-            default:                    normalizedName = name
-            }
-
-            AFLog.event(normalizedName, params)
-        }
-    }
-}
-
 extension WebViewController {
     /// Call this once after `webView` is created (e.g., in `viewDidLoad`)
     @objc func wvg_installAFBridge() {
@@ -103,9 +76,25 @@ extension WebViewController {
                                   forMainFrameOnly: false)
         webView.configuration.userContentController.addUserScript(script)
 
-        // 2) Install our dedicated handler object (and retain it)
-        let handler = AFScriptHandler()
-        webView.configuration.userContentController.add(handler, name: afBridgeName)
-        setAssoc(self, &_afHandlerKey, handler) // retain for the lifetime of this VC
+        // 2) Register self as the handler for afBridgeName messages
+        webView.configuration.userContentController.add(self, name: afBridgeName)
+    }
+
+    internal func handleAFBridgeEvent(_ message: WKScriptMessage) {
+        guard message.name == afBridgeName else { return }
+        // Expecting { name: String, params: Object }
+        if let dict = message.body as? [String: Any],
+           let name = dict["name"] as? String {
+            let params = dict["params"] as? [String: Any] ?? [:]
+            let normalizedName: String
+            switch name {
+            case "login":               normalizedName = AFEventName.webLogin
+            case "join_now", "signup":  normalizedName = AFEventName.webJoin
+            case "cta_click":           normalizedName = AFEventName.webCTAClick
+            case "web_screen_view":     normalizedName = AFEventName.webScreenView
+            default:                    normalizedName = name
+            }
+            AFLog.event(normalizedName, params)
+        }
     }
 }

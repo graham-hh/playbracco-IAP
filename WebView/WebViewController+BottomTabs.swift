@@ -270,7 +270,7 @@ private func shouldShowTabs(for url: URL?) -> Bool {
 }
 
 // MARK: - Behavior
-extension WebViewController: UITabBarDelegate, WKScriptMessageHandler {
+extension WebViewController: UITabBarDelegate {
     // Lightweight on-screen debug toast (helps when console is quiet)
     private func wvg_debugToast(_ text: String) {
         DispatchQueue.main.async {
@@ -1283,12 +1283,3 @@ extension WebViewController {
 
 
 
-    // MARK: - WKScriptMessageHandler for Rookie/Pro mode and login state
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "mode", let mode = message.body as? String {
-            print("Mode updated to:", mode)
-            UserManager.shared.isRookieMode = (mode == "rookie")
-        } else if message.name == "login", let loginState = message.body as? String {
-            print("Login state:", loginState)
-        }
-    }

@@ -787,10 +787,12 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         @unknown default:
             break
         }
+        // --- Begin unified WKWebViewConfiguration setup ---
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         config.userContentController.add(self, name: "flutter_inappwebview")
+        print("WKScriptMessageHandler 'flutter_inappwebview' attached and waiting…")
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """
         (function() {
@@ -856,8 +858,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
           window.__wvgHideObserver = new MutationObserver(function() { run(); });
           window.__wvgHideObserver.observe(document.documentElement || document.body, { childList: true, subtree: true });
         })();
-        """;
-        
+        """
         // === Play Slip integration (open sidebar modal and keep mini slip above tab bar) ===
         let playSlipJS = """
         (function() {
@@ -914,8 +915,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
           });
           window.__wvgSlipObs.observe(document.documentElement || document.body, {childList:true,subtree:true});
         })();
-        """;
-        
+        """
         let playSlipScript = WKUserScript(source: playSlipJS,
                                           injectionTime: .atDocumentEnd,
                                           forMainFrameOnly: true)
@@ -924,6 +924,8 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
                                              injectionTime: .atDocumentEnd,
                                              forMainFrameOnly: true)
         config.userContentController.addUserScript(accountHideScript)
+        // Add further WKUserScript injections here if needed (add to config.userContentController)
+        // --- End unified WKWebViewConfiguration setup ---
         webView = WKWebView(frame: UIScreen.main.bounds, configuration: config)
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -931,21 +933,10 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             displayJailbreakAlert()
             webView.alpha = 0
         }
-        
-        let preferences = WKPreferences()
-        preferences.javaScriptEnabled = true
-        
-        let configuration = WKWebViewConfiguration()
-        configuration.preferences = preferences
-        
-        // Enable service workers
-        configuration.websiteDataStore = WKWebsiteDataStore.default()
-        
         // Enable Adsense ads
         if (Constants.useAdsenseAds) {
             GADMobileAds.sharedInstance().register(webView)
         }
-        
         addWebViewToMainView(webView)
         // Prevent automatic safe-area top padding on the web content
         if #available(iOS 11.0, *) {
@@ -957,7 +948,6 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         case .phone:
             if useragent_iphone.isEqual("")
             {
-                
             }
             else
             {
@@ -968,7 +958,6 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         case .pad:
             if useragent_ipad.isEqual("")
             {
-                
             }
             else
             {
@@ -1001,16 +990,15 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             defaults.set(now, forKey: "lastCheckDate")
             self.download(deep: osURL)
         }
-        
+
         if savedOSurltwo == "1" {
             self.extendediap = false
         }
-        
+
 #else
 #endif
         let phonecheck = UIScreen.main.bounds
         let statusbar: CGFloat = 20
-        
         if phonecheck.size.height == 667 - statusbar
         {
             offlineImageView.frame = CGRect(x: CGFloat(103), y: CGFloat(228), width: CGFloat(170), height: CGFloat(170))
@@ -1018,7 +1006,6 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             lblText2.frame = CGRect(x: CGFloat(25), y: CGFloat(435), width: CGFloat(326), height: CGFloat(50))
             btnTry.frame = CGRect(x: CGFloat(110), y: CGFloat(520), width: CGFloat(150), height: CGFloat(20))
         }
-        
         if phonecheck.size.height == 736 - statusbar
         {
             offlineImageView.frame = CGRect(x: CGFloat(123), y: CGFloat(205), width: CGFloat(170), height: CGFloat(170))
@@ -1026,7 +1013,6 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             lblText2.frame = CGRect(x: CGFloat(44), y: CGFloat(374), width: CGFloat(326), height: CGFloat(50))
             btnTry.frame = CGRect(x: CGFloat(132), y: CGFloat(453), width: CGFloat(150), height: CGFloat(20))
         }
-        
         if #available(iOS 13.0, *)
         {
             if self.traitCollection.userInterfaceStyle != .dark {
@@ -1035,7 +1021,6 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         }
         let url = URL(string: webviewurl)!
         host = url.host ?? ""
-        
         if (preventoverscroll)
         {
             self.webView.scrollView.bounces = false
@@ -1057,28 +1042,17 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
             WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date(timeIntervalSince1970: 0), completionHandler: {})
             URLCache.shared.removeAllCachedResponses()
             URLCache.shared.removeAllCachedResponses()
-            let config = WKWebViewConfiguration()
-            config.websiteDataStore = WKWebsiteDataStore.nonPersistent()
-            config.allowsInlineMediaPlayback = true
-            config.mediaTypesRequiringUserActionForPlayback = []
             HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
             WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
                 records.forEach { record in
                     WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
                 }
             }
-            
         }
-        
         view.bringSubviewToFront(loadingSign)
-        
         webView.scrollView.bouncesZoom = false
         webView.allowsLinkPreview = false
         webView.autoresizingMask = ([.flexibleHeight, .flexibleWidth])
-        let webConfiguration = WKWebViewConfiguration()
-        webConfiguration.allowsInlineMediaPlayback = true
-        webConfiguration.userContentController.add(self, name: "flutter_inappwebview")
-        
         offlineImageView.isHidden = true
         loadingSign.stopAnimating()
         loadingSign.isHidden = true
@@ -1474,24 +1448,19 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
     
     @objc func cleanWebViewData() {
         if (deletecacheonexit){
-            
             let websiteDataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
             WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date(timeIntervalSince1970: 0), completionHandler: {})
-            
-            
             URLCache.shared.removeAllCachedResponses()
             URLCache.shared.removeAllCachedResponses()
-            let config = WKWebViewConfiguration()
-            config.websiteDataStore = WKWebsiteDataStore.nonPersistent()
-            config.allowsInlineMediaPlayback = true
-            config.mediaTypesRequiringUserActionForPlayback = []
             HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
             WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
                 records.forEach { record in
                     WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
                 }
             }
-        }}
+        }
+    }
+
     
     // MARK: - Play Slip bridge
     func openPlaySlip() {
@@ -5979,7 +5948,6 @@ extension WebViewController: BarcodeScannerDismissalDelegate {
         controller.dismiss(animated: true, completion: nil)
     }
 }
-
 extension WebViewController {
     
     func alertWithTitle(_ title: String, message: String) -> UIAlertController {
@@ -6511,5 +6479,6 @@ class PreviewItem: NSObject, QLPreviewItem {
     }
 }
 
-// Only one userContentController implementation for WebViewController should remain, as above.
+
+
 
