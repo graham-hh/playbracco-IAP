@@ -740,14 +740,6 @@ extension WebViewController: UITabBarDelegate {
         webView.configuration.userContentController.add(self, name: "mode")
         // Register script message handler for login detection
         webView.configuration.userContentController.add(self, name: "login")
-        // Register for pageChanged script message via a dedicated bridge (avoid duplicate conformance)
-        if !hasRegisteredPageChanged(self) {
-            webView.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
-            let bridge = PageChangedBridge(owner: self)
-            setAssoc(self, &_pageChangedBridgeKey, bridge)
-            webView.configuration.userContentController.add(bridge, name: "pageChanged")
-            markRegisteredPageChanged(self)
-        }
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
@@ -1350,5 +1342,22 @@ extension WebViewController {
         UIView.animate(withDuration: 0.22) {
             bar.alpha = 1
         }
+    }
+}
+
+// MARK: - Register pageChanged bridge in viewDidLoad and clean up in deinit
+extension WebViewController {
+    // Ensure this is only added if not already present
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        // Register the pageChanged bridge handler once
+        let bridge = PageChangedBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, bridge)
+        webView.configuration.userContentController.add(bridge, name: "pageChanged")
+    }
+
+    deinit {
+        // Remove the script message handler for pageChanged
+        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "pageChanged")
     }
 }
