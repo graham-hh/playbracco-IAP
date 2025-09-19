@@ -206,9 +206,6 @@ private var _lastOffsetYKey: UInt8    = 0
 private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
 var _pageChangedBridgeKey: UInt8 = 0
-var _hasRegisteredPageChangedKey: UInt8 = 0
-private var _hasRegisteredModeKey: UInt8 = 0
-private var _hasRegisteredLoginKey: UInt8 = 0
 
 // Helpers
 func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
@@ -218,26 +215,6 @@ func setAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer, _ value: Any?) {
     objc_setAssociatedObject(obj, key, value, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 }
 
-private func hasRegisteredPageChanged(_ obj: AnyObject) -> Bool {
-    return (getAssoc(obj, &_hasRegisteredPageChangedKey) as? Bool) ?? false
-}
-private func markRegisteredPageChanged(_ obj: AnyObject) {
-    setAssoc(obj, &_hasRegisteredPageChangedKey, true as Bool?)
-}
-
-private func hasRegisteredMode(_ obj: AnyObject) -> Bool {
-    return (getAssoc(obj, &_hasRegisteredModeKey) as? Bool) ?? false
-}
-private func markRegisteredMode(_ obj: AnyObject) {
-    setAssoc(obj, &_hasRegisteredModeKey, true as Bool?)
-}
-
-private func hasRegisteredLogin(_ obj: AnyObject) -> Bool {
-    return (getAssoc(obj, &_hasRegisteredLoginKey) as? Bool) ?? false
-}
-private func markRegisteredLogin(_ obj: AnyObject) {
-    setAssoc(obj, &_hasRegisteredLoginKey, true as Bool?)
-}
 
 
 // MARK: - Tabs
@@ -749,32 +726,29 @@ extension WebViewController: UITabBarDelegate {
 
     private func setupBottomTabs() {
         print("WVG BottomTabs: setupBottomTabs()")
-        // wvg_debugToast("Bottom tabs ready")
         guard let webView = self.webView else { return }
+        let ucc = webView.configuration.userContentController
 
-        // Register script message handler for mode switching
-        guard !hasRegisteredMode(self) else { return }
-        webView.configuration.userContentController.add(self, name: "mode")
-        markRegisteredMode(self)
-        // Register script message handler for login detection
-        guard !hasRegisteredLogin(self) else { return }
-        webView.configuration.userContentController.add(self, name: "login")
-        markRegisteredLogin(self)
+        // Always remove before adding (idempotent)
+        ucc.removeScriptMessageHandler(forName: "mode")
+        ucc.add(self, name: "mode")
 
-        // Register pageChanged bridge handler only once
-        if !hasRegisteredPageChanged(self) {
-            webView.configuration.userContentController.add(PageChangedBridge(owner: self), name: "pageChanged")
-            markRegisteredPageChanged(self)
-        }
+        ucc.removeScriptMessageHandler(forName: "login")
+        ucc.add(self, name: "login")
+
+        ucc.removeScriptMessageHandler(forName: "pageChanged")
+        let bridge = PageChangedBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, bridge)
+        ucc.add(bridge, name: "pageChanged")
 
         // Apply custom Shop sheet styling
         let custom = BraccoShopSheetViewController.Style(
-            backgroundColor: UIColor(red: 87/255.0, green: 22/255.0, blue: 0/255.0, alpha: 1.0), // #571600
+            backgroundColor: UIColor(red: 87/255.0, green: 22/255.0, blue: 0/255.0, alpha: 1.0),
             titleFont: UIFont(name: "JetBrainsMono-Bold", size: 22) ?? .systemFont(ofSize: 22, weight: .bold),
             titleColor: .white,
             bodyFont: UIFont(name: "JetBrainsMono-Bold", size: 15) ?? .systemFont(ofSize: 15, weight: .regular),
             bodyColor: UIColor(white: 1, alpha: 0.8),
-            ctaBackgroundColor: UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0), // brand orange
+            ctaBackgroundColor: UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0),
             ctaTextColor: .white
         )
         setShopSheetStyle(custom)
