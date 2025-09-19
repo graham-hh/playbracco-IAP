@@ -297,7 +297,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
     
     override func viewDidAppear(_ animated: Bool) {
         priorBarLayoutConstant = topLayout?.constant ?? 0
-        if #available(iOS 16.4, *) { webView.isInspectable = false; }
+        if #available(iOS 16.4, *) { webView.isInspectable = true; }
         view.backgroundColor = Constants.splashscreencolor
         self.statusbarView.backgroundColor = Constants.splashscreencolor
         
