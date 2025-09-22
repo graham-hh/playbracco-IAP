@@ -166,12 +166,16 @@ final class ShopViewController: UIViewController {
             // Price button (orange pill)
             let priceButton = UIButton(type: .system)
             priceButton.setTitle(product.displayPrice, for: .normal)
-            priceButton.titleLabel?.font = UIFont(name: "JetBrainsMono-Bold", size: 18)
+            priceButton.titleLabel?.font = UIFont(name: "JetBrainsMono-Bold", size: 10)
             priceButton.setTitleColor(.white, for: .normal)
             priceButton.backgroundColor = UIColor(red: 0xF1/255.0, green: 0x56/255.0, blue: 0x22/255.0, alpha: 1.0) // #F15622
             priceButton.layer.cornerRadius = 15
             priceButton.layer.masksToBounds = true
-            priceButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 20)
+            priceButton.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                priceButton.widthAnchor.constraint(equalToConstant: 60),
+                priceButton.heightAnchor.constraint(equalToConstant: 30)
+            ])
             priceButton.setContentHuggingPriority(.required, for: .horizontal)
             priceButton.setContentCompressionResistancePriority(.required, for: .horizontal)
             priceButton.addAction(UIAction { [weak self] _ in
