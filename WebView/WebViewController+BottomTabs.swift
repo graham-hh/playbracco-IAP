@@ -185,7 +185,7 @@ private enum BottomTabStyle {
         ?? .systemFont(ofSize: 11, weight: .regular)
 
     // Layout
-    static let height: CGFloat       = 56
+    static let height: CGFloat       = 83
     static let isTranslucent: Bool   = false
     static let hideLabels: Bool      = false
 
@@ -768,6 +768,8 @@ extension WebViewController: UITabBarDelegate {
             if BottomTabStyle.hideLabels {
                 item.title = nil
                 item.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
+            } else {
+                item.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -2)
             }
             items.append(item)
         }
