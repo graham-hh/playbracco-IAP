@@ -166,7 +166,7 @@ final class ShopViewController: UIViewController {
             let coinStack = UIStackView()
             coinStack.axis = .horizontal
             coinStack.alignment = .center
-            coinStack.spacing = 2.5
+            coinStack.spacing = 0
             coinStack.translatesAutoresizingMaskIntoConstraints = false
             
             let braccoCoinIcon = UIImageView(image: UIImage(named: "bracco_coin_icon"))
@@ -176,6 +176,11 @@ final class ShopViewController: UIViewController {
                 braccoCoinIcon.widthAnchor.constraint(equalToConstant: 40),
                 braccoCoinIcon.heightAnchor.constraint(equalToConstant: 40)
             ])
+            
+            braccoCoinIcon.setContentHuggingPriority(.required, for: .horizontal)
+            braccoCoinIcon.setContentCompressionResistancePriority(.required, for: .horizontal)
+            coinImage.setContentHuggingPriority(.required, for: .horizontal)
+            coinImage.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             coinStack.addArrangedSubview(braccoCoinIcon)
             coinStack.addArrangedSubview(coinImage)
