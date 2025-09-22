@@ -116,7 +116,7 @@ final class ShopViewController: UIViewController {
 
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = 10
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
