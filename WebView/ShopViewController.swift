@@ -166,15 +166,15 @@ final class ShopViewController: UIViewController {
             let coinStack = UIStackView()
             coinStack.axis = .horizontal
             coinStack.alignment = .center
-            coinStack.spacing = 8
+            coinStack.spacing = 15
             coinStack.translatesAutoresizingMaskIntoConstraints = false
             
             let braccoCoinIcon = UIImageView(image: UIImage(named: "bracco_coin_icon"))
             braccoCoinIcon.contentMode = .scaleAspectFit
             braccoCoinIcon.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                braccoCoinIcon.widthAnchor.constraint(equalToConstant: 30),
-                braccoCoinIcon.heightAnchor.constraint(equalToConstant: 30)
+                braccoCoinIcon.widthAnchor.constraint(equalToConstant: 40),
+                braccoCoinIcon.heightAnchor.constraint(equalToConstant: 40)
             ])
             
             coinStack.addArrangedSubview(braccoCoinIcon)
