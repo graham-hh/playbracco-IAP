@@ -152,41 +152,16 @@ final class ShopViewController: UIViewController {
                 cardStack.bottomAnchor.constraint(equalTo: card.bottomAnchor)
             ])
 
-            // Container stack for coin image and amount label
-            let coinAmountStack = UIStackView()
-            coinAmountStack.axis = .horizontal
-            coinAmountStack.alignment = .center
-            coinAmountStack.spacing = 8
-            coinAmountStack.translatesAutoresizingMaskIntoConstraints = false
-
-            // Coin icon (always bracco_coin_icon)
-            let coinImage = UIImageView(image: UIImage(named: "bracco_coin_icon"))
+            // Dynamic coin image based on product id last component
+            let coinKey = product.id.split(separator: ".").last ?? ""
+            let coinImageName = "\(coinKey)Coins"
+            let coinImage = UIImageView(image: UIImage(named: coinImageName))
             coinImage.contentMode = .scaleAspectFit
             coinImage.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                coinImage.widthAnchor.constraint(equalToConstant: 40),
                 coinImage.heightAnchor.constraint(equalToConstant: 40)
             ])
-            coinAmountStack.addArrangedSubview(coinImage)
-
-            // Amount label (parse coins from product id or displayName)
-            let amountLabel = UILabel()
-            amountLabel.font = UIFont.boldSystemFont(ofSize: 20)
-            amountLabel.textColor = .black
-            amountLabel.numberOfLines = 1
-            amountLabel.translatesAutoresizingMaskIntoConstraints = false
-            // Parse coin amount from product id: e.g. "com.playbracco.coins.5000"
-            if let lastComponent = product.id.split(separator: ".").last {
-                amountLabel.text = "\(lastComponent) Coins"
-            } else {
-                amountLabel.text = product.displayName
-            }
-            NSLayoutConstraint.activate([
-                amountLabel.heightAnchor.constraint(equalToConstant: 40)
-            ])
-            coinAmountStack.addArrangedSubview(amountLabel)
-
-            cardStack.addArrangedSubview(coinAmountStack)
+            cardStack.addArrangedSubview(coinImage)
 
             // Price button (orange pill)
             let priceButton = UIButton(type: .system)
