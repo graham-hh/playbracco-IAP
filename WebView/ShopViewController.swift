@@ -19,12 +19,11 @@ final class ShopViewController: UIViewController {
     private func loadProducts() async {
         // Desired product order
         let desiredOrder = [
-            "com.playbracco.coins.2500",
+            "com.playbracco.coins.5000",
             "com.playbracco.coins.10000",
+            "com.playbracco.coins.15000",
+            "com.playbracco.coins.20000",
             "com.playbracco.coins.25000",
-            "com.playbracco.coins.50000",
-            "com.playbracco.coins.125000",
-            "com.playbracco.coins.250000"
         ]
         let fetchedProducts = await IAPManager.shared.products
         self.products = fetchedProducts.sorted {
@@ -154,7 +153,16 @@ final class ShopViewController: UIViewController {
             ])
 
             // Coin icon (left, before product name)
-            let coinImage = UIImageView(image: UIImage(named: "bracco_coin_icon"))
+            let coinImageName: String
+            switch product.id {
+                case "com.playbracco.coins.2500": coinImageName = "5000Coins"
+                case "com.playbracco.coins.10000": coinImageName = "10000Coins"
+                case "com.playbracco.coins.25000": coinImageName = "15000Coins"
+                case "com.playbracco.coins.50000": coinImageName = "20000Coins"
+                case "com.playbracco.coins.125000": coinImageName = "25000Coins"
+                default: coinImageName = "bracco_coin_icon"
+            }
+            let coinImage = UIImageView(image: UIImage(named: coinImageName))
             coinImage.contentMode = .scaleAspectFit
             coinImage.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([

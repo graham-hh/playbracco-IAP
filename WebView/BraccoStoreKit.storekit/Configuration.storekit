@@ -15,7 +15,7 @@
   ],
   "products" : [
     {
-      "displayPrice" : "1.99",
+      "displayPrice" : "4.99",
       "familyShareable" : false,
       "internalID" : "D7873BFA",
       "localizations" : [
@@ -25,13 +25,13 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.2500",
+      "productID" : "com.playbracco.coins.5000",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "2,500 Bracco Coins",
+      "referenceName" : "5,000 Bracco Coins",
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "4.99",
+      "displayPrice" : "9.99",
       "familyShareable" : false,
       "internalID" : "F4547ED0",
       "localizations" : [
@@ -47,7 +47,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "9.99",
+      "displayPrice" : "14.99",
       "familyShareable" : false,
       "internalID" : "53955D68",
       "localizations" : [
@@ -57,9 +57,9 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.25000",
+      "productID" : "com.playbracco.coins.15000",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "25,000 Bracco Coins",
+      "referenceName" : "15,000 Bracco Coins",
       "type" : "Consumable"
     },
     {
@@ -73,13 +73,13 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.50000",
+      "productID" : "com.playbracco.coins.20000",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "50,000 Bracco Coins",
+      "referenceName" : "20,000 Bracco Coins",
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "49.99",
+      "displayPrice" : "24.99",
       "familyShareable" : false,
       "internalID" : "C5508ACD",
       "localizations" : [
@@ -89,79 +89,60 @@
           "locale" : "en_US"
         }
       ],
-      "productID" : "com.playbracco.coins.125000",
+      "productID" : "com.playbracco.coins.25000",
       "promotionalImageID" : "7214D73F",
-      "referenceName" : "125,000 Bracco Coins",
-      "type" : "Consumable"
-    },
-    {
-      "displayPrice" : "99.99",
-      "familyShareable" : false,
-      "internalID" : "E8ABC1E2",
-      "localizations" : [
-        {
-          "description" : "",
-          "displayName" : "",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "com.playbracco.coins.250000",
-      "promotionalImageID" : "7214D73F",
-      "referenceName" : "250,000 Bracco Coins",
+      "referenceName" : "25,000 Bracco Coins",
       "type" : "Consumable"
     }
   ],
   "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
     "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
     "_storeKitErrors" : [
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Load Products"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Purchase"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Verification"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "App Store Sync"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Subscription Status"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "App Transaction"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Manage Subscriptions Sheet"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Refund Request Sheet"
       },
       {
-        "current" : null,
         "enabled" : false,
         "name" : "Offer Code Redeem Sheet"
       }
-    ]
+    ],
+    "_timeRate" : 0
   },
   "subscriptionGroups" : [
 
