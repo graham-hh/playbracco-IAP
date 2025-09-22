@@ -819,7 +819,7 @@ extension WebViewController: UITabBarDelegate {
         }
     }
 
-    /// Physically pins the WKWebView's bottom to the view's safe area bottom so content never sits underneath.
+    /// Physically pins the WKWebView's bottom to the tab bar's top so content never sits underneath.
     private func reanchorWebViewBottom(to bar: UITabBar) {
         guard let webView = self.webView else { return }
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -852,8 +852,8 @@ extension WebViewController: UITabBarDelegate {
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
 
-        // Pin the webView's bottom to the view's safe area bottom
-        webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        // Pin the webView's bottom to the TOP of the tab bar
+        webView.bottomAnchor.constraint(equalTo: bar.topAnchor).isActive = true
 
         // Eliminate bottom content inset since the web view no longer sits under the bar
         webView.scrollView.contentInset.bottom = 0
