@@ -152,34 +152,41 @@ final class ShopViewController: UIViewController {
                 cardStack.bottomAnchor.constraint(equalTo: card.bottomAnchor)
             ])
 
-            // Coin icon (left, before product name)
-            let coinImageName: String
-            switch product.id {
-                case "com.playbracco.coins.2500": coinImageName = "5000Coins"
-                case "com.playbracco.coins.10000": coinImageName = "10000Coins"
-                case "com.playbracco.coins.25000": coinImageName = "15000Coins"
-                case "com.playbracco.coins.50000": coinImageName = "20000Coins"
-                case "com.playbracco.coins.125000": coinImageName = "25000Coins"
-                default: coinImageName = "bracco_coin_icon"
-            }
-            let coinImage = UIImageView(image: UIImage(named: coinImageName))
+            // Container stack for coin image and amount label
+            let coinAmountStack = UIStackView()
+            coinAmountStack.axis = .horizontal
+            coinAmountStack.alignment = .center
+            coinAmountStack.spacing = 8
+            coinAmountStack.translatesAutoresizingMaskIntoConstraints = false
+
+            // Coin icon (always bracco_coin_icon)
+            let coinImage = UIImageView(image: UIImage(named: "bracco_coin_icon"))
             coinImage.contentMode = .scaleAspectFit
             coinImage.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 coinImage.widthAnchor.constraint(equalToConstant: 40),
                 coinImage.heightAnchor.constraint(equalToConstant: 40)
             ])
-            cardStack.addArrangedSubview(coinImage)
+            coinAmountStack.addArrangedSubview(coinImage)
 
-            // Product name label
-            let nameLabel = UILabel()
-            nameLabel.text = product.displayName
-            nameLabel.font = UIFont.boldSystemFont(ofSize: 20)
-            nameLabel.textColor = .black
-            nameLabel.numberOfLines = 1
-            nameLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
-            nameLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-            cardStack.addArrangedSubview(nameLabel)
+            // Amount label (parse coins from product id or displayName)
+            let amountLabel = UILabel()
+            amountLabel.font = UIFont.boldSystemFont(ofSize: 20)
+            amountLabel.textColor = .black
+            amountLabel.numberOfLines = 1
+            amountLabel.translatesAutoresizingMaskIntoConstraints = false
+            // Parse coin amount from product id: e.g. "com.playbracco.coins.5000"
+            if let lastComponent = product.id.split(separator: ".").last {
+                amountLabel.text = "\(lastComponent) Coins"
+            } else {
+                amountLabel.text = product.displayName
+            }
+            NSLayoutConstraint.activate([
+                amountLabel.heightAnchor.constraint(equalToConstant: 40)
+            ])
+            coinAmountStack.addArrangedSubview(amountLabel)
+
+            cardStack.addArrangedSubview(coinAmountStack)
 
             // Price button (orange pill)
             let priceButton = UIButton(type: .system)
@@ -199,7 +206,7 @@ final class ShopViewController: UIViewController {
             }, for: .touchUpInside)
             cardStack.addArrangedSubview(priceButton)
 
-            stackView.addArrangedSubview(card)
+        stackView.addArrangedSubview(card)
         }
     }
 
