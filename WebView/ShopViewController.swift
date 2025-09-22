@@ -166,7 +166,7 @@ final class ShopViewController: UIViewController {
             let coinStack = UIStackView()
             coinStack.axis = .horizontal
             coinStack.alignment = .center
-            coinStack.spacing = 5
+            coinStack.spacing = 2.5
             coinStack.translatesAutoresizingMaskIntoConstraints = false
             
             let braccoCoinIcon = UIImageView(image: UIImage(named: "bracco_coin_icon"))
