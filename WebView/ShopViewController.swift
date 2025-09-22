@@ -169,7 +169,7 @@ final class ShopViewController: UIViewController {
             priceButton.titleLabel?.font = UIFont(name: "JetBrainsMono-Bold", size: 10)
             priceButton.setTitleColor(.white, for: .normal)
             priceButton.backgroundColor = UIColor(red: 0xF1/255.0, green: 0x56/255.0, blue: 0x22/255.0, alpha: 1.0) // #F15622
-            priceButton.layer.cornerRadius = 15
+            priceButton.layer.cornerRadius = 5
             priceButton.layer.masksToBounds = true
             priceButton.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
