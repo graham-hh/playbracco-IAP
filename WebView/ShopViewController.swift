@@ -159,7 +159,7 @@ final class ShopViewController: UIViewController {
             coinImage.contentMode = .scaleAspectFit
             coinImage.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                coinImage.heightAnchor.constraint(equalToConstant: 40)
+                coinImage.heightAnchor.constraint(lessThanOrEqualToConstant: 30)
             ])
             cardStack.addArrangedSubview(coinImage)
 
