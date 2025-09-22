@@ -161,7 +161,26 @@ final class ShopViewController: UIViewController {
             NSLayoutConstraint.activate([
                 coinImage.heightAnchor.constraint(lessThanOrEqualToConstant: 30)
             ])
-            cardStack.addArrangedSubview(coinImage)
+            
+            // Create coinStack with bracco_coin_icon and coinImage
+            let coinStack = UIStackView()
+            coinStack.axis = .horizontal
+            coinStack.alignment = .center
+            coinStack.spacing = 8
+            coinStack.translatesAutoresizingMaskIntoConstraints = false
+            
+            let braccoCoinIcon = UIImageView(image: UIImage(named: "bracco_coin_icon"))
+            braccoCoinIcon.contentMode = .scaleAspectFit
+            braccoCoinIcon.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                braccoCoinIcon.widthAnchor.constraint(equalToConstant: 30),
+                braccoCoinIcon.heightAnchor.constraint(equalToConstant: 30)
+            ])
+            
+            coinStack.addArrangedSubview(braccoCoinIcon)
+            coinStack.addArrangedSubview(coinImage)
+            
+            cardStack.addArrangedSubview(coinStack)
 
             // Price button (orange pill)
             let priceButton = UIButton(type: .system)
