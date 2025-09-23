@@ -185,7 +185,7 @@ private enum BottomTabStyle {
         ?? .systemFont(ofSize: 11, weight: .regular)
 
     // Layout
-    static let height: CGFloat       = 83
+    static let height: CGFloat = UIScreen.main.bounds.height * 0.1 // ~10% of screen height
     static let isTranslucent: Bool   = false
     static let hideLabels: Bool      = false
 
@@ -786,8 +786,8 @@ extension WebViewController: UITabBarDelegate {
         NSLayoutConstraint.activate([
             bar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            bar.heightAnchor.constraint(equalToConstant: BottomTabStyle.height)
+            bar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            bar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1)
         ])
 
         // Physically pin the web view above the tab bar
