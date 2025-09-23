@@ -786,7 +786,7 @@ extension WebViewController: UITabBarDelegate {
         NSLayoutConstraint.activate([
             bar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            bar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             bar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1)
         ])
 
