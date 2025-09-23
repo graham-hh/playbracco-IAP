@@ -206,6 +206,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PWMessagingDelegate {
         // ✅ Present onboarding on first launch; ATT appears immediately, other prompts after CTA.
         showOnboardingIfNeeded()
 
+        // Global UITabBarAppearance configuration: force solid orange background
+        if #available(iOS 13.0, *) {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0) // Orange color
+            appearance.backgroundEffect = nil
+
+            UITabBar.appearance().standardAppearance = appearance
+            if #available(iOS 15.0, *) {
+                UITabBar.appearance().scrollEdgeAppearance = appearance
+            }
+            UITabBar.appearance().isTranslucent = false
+            UITabBar.appearance().backgroundImage = UIImage()
+            UITabBar.appearance().shadowImage = UIImage()
+        } else {
+            UITabBar.appearance().barTintColor = UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0)
+            UITabBar.appearance().isTranslucent = false
+            UITabBar.appearance().backgroundImage = UIImage()
+            UITabBar.appearance().shadowImage = UIImage()
+        }
+
         return true
     }
 
