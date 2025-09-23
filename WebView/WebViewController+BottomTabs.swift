@@ -1128,14 +1128,15 @@ extension WebViewController: UITabBarDelegate {
 
     // MARK: Style
     private func applyStyle(to bar: UITabBar) {
-        bar.isTranslucent = BottomTabStyle.isTranslucent
+        // Explicitly set isTranslucent to false at the top
+        bar.isTranslucent = false
         bar.tintColor = BottomTabStyle.selectedColor
         bar.unselectedItemTintColor = BottomTabStyle.unselectedColor
         if #available(iOS 13.0, *) {
             let appearance = UITabBarAppearance()
-            BottomTabStyle.isTranslucent ? appearance.configureWithDefaultBackground()
-                                         : appearance.configureWithOpaqueBackground()
+            appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = BottomTabStyle.backgroundColor
+            appearance.backgroundEffect = nil
             appearance.stackedLayoutAppearance.selected.iconColor = BottomTabStyle.selectedColor
             appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
                 .foregroundColor: BottomTabStyle.selectedColor,
