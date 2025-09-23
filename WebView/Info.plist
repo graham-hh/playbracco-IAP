@@ -8,14 +8,10 @@
 	<string>en_US</string>
 	<key>CFBundleDisplayName</key>
 	<string>Play Bracco</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>JetBrainsMono-Bold.ttf</string>
-		<string>BNDimeDisplay.ttf</string>
-		<string>BNDimeDisplay-Regular.ttf</string>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -65,6 +61,8 @@
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>GADIsAdManagerApp</key>
 	<true/>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -80,10 +78,17 @@
 	<string>Synchronize your contact data with our platform</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Unlock to continue</string>
+	<key>NSHumanReadableCopyright</key>
+	<string></string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Bracco uses your location to personalize push notifications and improve app performance. For example, we may send you special offers based on your region or analyze app usage trends in different areas.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Bracco uses your location to personalize push notifications and improve app performance. For example, we may send you special offers based on your region or analyze app usage trends in different areas.</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>LocationPreciseUsage</key>
+		<string>We use precise location to show nearby offers and location-based features.</string>
+	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Bracco uses your location to personalize push notifications and improve app performance. For example, we may send you special offers based on your region or analyze app usage trends in different areas.</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -110,7 +115,7 @@
 			<key>NSPrivacyAccessedAPICategory</key>
 			<string>NSPrivacyAccessedAPICategoryDiskSpace</string>
 			<key>NSPrivacyUsageDescription</key>
-			<string>We check disk space availability to prevent data loss and ensure the app can safely download and store essential data without compromising the device&apos;s performance.</string>
+			<string>We check disk space availability to prevent data loss and ensure the app can safely download and store essential data without compromising the device's performance.</string>
 		</dict>
 		<dict>
 			<key>NSPrivacyAccessedAPICategory</key>
@@ -127,10 +132,18 @@
 	<string>XXXXX-XXXXX</string>
 	<key>Pushwoosh_LAZY_INITIALIZATION</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>JetBrainsMono-Bold.ttf</string>
+		<string>BNDimeDisplay.ttf</string>
+		<string>BNDimeDisplay-Regular.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string></string>
 	<key>UIMainStoryboardFile</key>
@@ -149,13 +162,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
-	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
-	<dict>
-		<key>LocationPreciseUsage</key>
-		<string>We use precise location to show nearby offers and location-based features.</string>
-	</dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
