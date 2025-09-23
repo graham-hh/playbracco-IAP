@@ -1176,10 +1176,16 @@ extension WebViewController: UITabBarDelegate {
                 appearance.compactInlineLayoutAppearance.normal.titleTextAttributes[.foregroundColor] = UIColor.clear
                 appearance.compactInlineLayoutAppearance.selected.titleTextAttributes[.foregroundColor] = UIColor.clear
             }
+            // Prevent system blur by setting background/shadow images to blank
+            bar.backgroundImage = UIImage()
+            bar.shadowImage = UIImage()
             bar.standardAppearance = appearance
             if #available(iOS 15.0, *) { bar.scrollEdgeAppearance = appearance }
         } else {
             bar.barTintColor = BottomTabStyle.backgroundColor
+            // Prevent system blur by setting background/shadow images to blank
+            bar.backgroundImage = UIImage()
+            bar.shadowImage = UIImage()
         }
     }
 
