@@ -5326,6 +5326,9 @@ private func addWebViewToMainView(_ webView: WKWebView)
         navigatorGeolocation.setWebView(webView: webView)
         installCoinsHiderUserScript(on: webView)
         installStatusBarSafeAreaStyle(on: webView)
+        // Register balanceUpdate listener safely
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "balances")
+        webView.configuration.userContentController.add(BalanceUpdateProxy(owner: self), name: "balances")
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -6162,6 +6165,48 @@ extension WebViewController {
         print(error)
         //        timer1?.vali
         
+    }
+}
+// MARK: - BalanceUpdateProxy for handling "balances" messages
+final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
+    weak var owner: WebViewController?
+
+    init(owner: WebViewController) {
+        self.owner = owner
+    }
+
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard message.name == "balances" else { return }
+
+        if let body = message.body as? [String: Any],
+           let balances = body["balances"] as? [String: Any],
+           let selectedBalanceId = body["selectedBalance"] as? Int,
+           let selectedBalance = balances["\(selectedBalanceId)"] as? [String: Any],
+           let isFreePlay = selectedBalance["isFreePlay"] as? Bool {
+            
+            if isFreePlay {
+                print("✅ Rookie mode detected (selectedBalanceId \(selectedBalanceId))")
+            } else {
+                print("✅ Pro mode detected (selectedBalanceId \(selectedBalanceId))")
+            }
+
+            // Send confirmation event back into the web page
+            let js = """
+            window.dispatchEvent(new CustomEvent('nativeBalanceMode', {
+              detail: { isFreePlay: \(isFreePlay ? "true" : "false"), selectedBalanceId: \(selectedBalanceId) }
+            }));
+            """
+            owner?.webView.evaluateJavaScript(js, completionHandler: { result, error in
+                if let error = error {
+                    print("⚠️ Failed to send nativeBalanceMode event: \(error.localizedDescription)")
+                } else {
+                    print("✅ nativeBalanceMode event dispatched to web page")
+                }
+            })
+
+        } else {
+            print("⚠️ Invalid balances payload: \(message.body)")
+        }
     }
 }
 
