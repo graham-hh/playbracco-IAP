@@ -798,6 +798,36 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         config.userContentController.add(self, name: "mode")
         config.userContentController.add(self, name: "login")
         print("WKScriptMessageHandler 'flutter_inappwebview' attached and waiting…")
+        // === BalanceUpdate test injector (for debugging Rookie/Pro state) ===
+        let balanceTestJS = """
+        (function() {
+          // Simple test buttons to send fake balanceUpdate messages
+          function sendRookie() {
+            window.webkit.messageHandlers.balances.postMessage({
+              balances: {
+                1: { balanceId: 1, isFreePlay: false, name: "Main", availableBalance: 1000 },
+                2: { balanceId: 2, isFreePlay: true,  name: "Rookie", availableBalance: 5000 }
+              },
+              selectedBalance: 2
+            });
+          }
+          function sendPro() {
+            window.webkit.messageHandlers.balances.postMessage({
+              balances: {
+                1: { balanceId: 1, isFreePlay: false, name: "Main", availableBalance: 1000 },
+                2: { balanceId: 2, isFreePlay: true,  name: "Rookie", availableBalance: 5000 }
+              },
+              selectedBalance: 1
+            });
+          }
+          // Expose globally
+          window.testBalanceRookie = sendRookie;
+          window.testBalancePro = sendPro;
+          console.log("Balance test injector ready. Call testBalanceRookie() or testBalancePro() in JS console.");
+        })();
+        """
+        let balanceTestScript = WKUserScript(source: balanceTestJS, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        config.userContentController.addUserScript(balanceTestScript)
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """
         (function() {
