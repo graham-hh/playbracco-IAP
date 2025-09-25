@@ -6304,6 +6304,8 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "balances" else { return }
+        
+        print("📩 Received balances message: \(message.body)")
 
         if let body = message.body as? [String: Any],
            let balances = body["balances"] as? [String: Any],
