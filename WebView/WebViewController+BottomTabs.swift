@@ -559,32 +559,27 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(pageChangedListenerJS, completionHandler: nil)
 
-        // Inject JS to detect mode from header and send to iOS app
+        // Inject JS to detect mode from header and send to iOS app (robust retrying header detector)
         let detectModeHeaderJS = """
         (function() {
-          try {
-            function detectModeFromHeader() {
-              var el = Array.from(document.querySelectorAll('h3,div,span'))
-                .find(e => (e.innerText || '').toLowerCase().includes('mode'));
-              if (el) {
-                var txt = (el.innerText || '').toLowerCase();
-                var mode = txt.includes('pro') ? 'pro' : 'rookie';
-                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
-                  window.webkit.messageHandlers.mode.postMessage(mode);
-                }
-                console.log("✅ Mode header detected:", mode);
-              } else {
-                console.log("⚠️ Mode header not found");
+          function detectModeFromHeader() {
+            var el = document.querySelector('div.MuiStack-root.css-vrrilw');
+            if (el && el.innerText) {
+              var txt = el.innerText.toLowerCase();
+              var mode = txt.includes('pro') ? 'pro' : 'rookie';
+              if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
+                window.webkit.messageHandlers.mode.postMessage(mode);
               }
+              console.log("✅ Mode header detected:", mode, "from text:", txt);
+            } else {
+              console.log("⚠️ Mode header not found, retrying...");
             }
-            detectModeFromHeader();
-
-            if (!window.__modeHeaderObserver__) {
-              window.__modeHeaderObserver__ = new MutationObserver(detectModeFromHeader);
-              window.__modeHeaderObserver__.observe(document.body, { childList: true, subtree: true });
-            }
-          } catch(e) {
-            console.log("⚠️ Error detecting mode from header", e);
+          }
+          detectModeFromHeader();
+          // Re-run detection every 2s to ensure it catches when DOM renders
+          if (!window.__modeHeaderIntervalInstalled__) {
+            window.__modeHeaderIntervalInstalled__ = true;
+            setInterval(detectModeFromHeader, 2000);
           }
         })();
         """
