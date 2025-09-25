@@ -6304,39 +6304,49 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "balances" else { return }
-        
+
         print("📩 Received balances message: \(message.body)")
         print("✅ BalanceUpdateProxy handler triggered at \(Date())")
 
+        // New logic for Rookie/Pro mode detection
         if let body = message.body as? [String: Any],
-           let balances = body["balances"] as? [String: Any],
-           let selectedBalanceId = body["selectedBalance"] as? Int,
-           let selectedBalance = balances["\(selectedBalanceId)"] as? [String: Any],
-           let isFreePlay = selectedBalance["isFreePlay"] as? Bool {
-            
-            if isFreePlay {
-                print("✅ Rookie mode detected (selectedBalanceId \(selectedBalanceId))")
-                UserManager.shared.isRookieMode = true
-            } else {
-                print("✅ Pro mode detected (selectedBalanceId \(selectedBalanceId))")
-                UserManager.shared.isRookieMode = false
-                owner?.presentProShop()
+           let balances = body["balances"] as? [String: Any] {
+
+            var selectedKey: String?
+
+            if let sb = body["selectedBalance"] as? Int {
+                selectedKey = "\(sb)"
+            } else if let sb = body["selectedBalance"] as? String {
+                selectedKey = sb
             }
 
-            // Send confirmation event back into the web page
-            let js = """
-            window.dispatchEvent(new CustomEvent('nativeBalanceMode', {
-              detail: { isFreePlay: \(isFreePlay ? "true" : "false"), selectedBalanceId: \(selectedBalanceId) }
-            }));
-            """
-            owner?.webView.evaluateJavaScript(js, completionHandler: { result, error in
-                if let error = error {
-                    print("⚠️ Failed to send nativeBalanceMode event: \(error.localizedDescription)")
+            if let key = selectedKey {
+                if key == "main" {
+                    print("✅ Pro mode detected (selectedBalanceId \(key))")
+                    UserManager.shared.isRookieMode = false
+                    owner?.presentProShop()
                 } else {
-                    print("✅ nativeBalanceMode event dispatched to web page")
+                    print("✅ Rookie mode detected (selectedBalanceId \(key))")
+                    UserManager.shared.isRookieMode = true
                 }
-            })
 
+                // Send confirmation event back into the web page
+                let isFreePlay = (key != "main")
+                let js = """
+                window.dispatchEvent(new CustomEvent('nativeBalanceMode', {
+                  detail: { isFreePlay: \(isFreePlay ? "true" : "false"), selectedBalanceId: "\(key)" }
+                }));
+                """
+                owner?.webView.evaluateJavaScript(js, completionHandler: { result, error in
+                    if let error = error {
+                        print("⚠️ Failed to send nativeBalanceMode event: \(error.localizedDescription)")
+                    } else {
+                        print("✅ nativeBalanceMode event dispatched to web page")
+                    }
+                })
+            } else {
+                print("⚠️ Could not resolve selectedBalance from payload:", body)
+            }
         } else {
             print("⚠️ Invalid balances payload: \(message.body)")
         }

@@ -812,10 +812,12 @@ extension WebViewController: UITabBarDelegate {
                 setAssoc(self, &_lastSelectedIndexKey, NSNumber(value: 0))
             }
             if UserManager.shared.isRookieMode {
+                // Rookie -> show in-app purchases
                 let shopVC = ShopViewController()
                 shopVC.modalPresentationStyle = .pageSheet
                 self.present(shopVC, animated: true, completion: nil)
             } else {
+                // Pro -> external Pro shop
                 self.presentProShop()
             }
             return
