@@ -34,7 +34,7 @@ class ProShopViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(red: 241/255, green: 86/255, blue: 34/255, alpha: 1.0) // Bracco orange
         setupViews()
     }
 
@@ -48,8 +48,9 @@ class ProShopViewController: UIViewController {
         view.addSubview(imageView)
 
         // title
-        titleLabel.text = titleText
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.text = titleText.uppercased()
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 22)
+        titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
@@ -57,13 +58,19 @@ class ProShopViewController: UIViewController {
         // body
         bodyLabel.text = bodyText
         bodyLabel.font = UIFont.systemFont(ofSize: 16)
+        bodyLabel.textColor = .white
         bodyLabel.textAlignment = .center
         bodyLabel.numberOfLines = 0
         bodyLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bodyLabel)
 
         // open button
-        openButton.setTitle("Open Shop", for: .normal)
+        openButton.setTitle("GO TO PURCHASE PAGE", for: .normal)
+        openButton.setTitleColor(.white, for: .normal)
+        openButton.backgroundColor = UIColor(red: 87/255, green: 22/255, blue: 0/255, alpha: 1.0) // dark brown
+        openButton.layer.cornerRadius = 8
+        openButton.clipsToBounds = true
+        openButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 24, bottom: 14, right: 24)
         openButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         openButton.addTarget(self, action: #selector(didTapOpen), for: .touchUpInside)
         openButton.translatesAutoresizingMaskIntoConstraints = false
@@ -71,6 +78,7 @@ class ProShopViewController: UIViewController {
 
         // close button
         closeButton.setTitle("Cancel", for: .normal)
+        closeButton.setTitleColor(.white, for: .normal)
         closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         closeButton.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -91,8 +99,9 @@ class ProShopViewController: UIViewController {
             bodyLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             bodyLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
 
-            openButton.topAnchor.constraint(equalTo: bodyLabel.bottomAnchor, constant: 32),
-            openButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            openButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            openButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            openButton.heightAnchor.constraint(equalToConstant: 50),
 
             closeButton.topAnchor.constraint(equalTo: openButton.bottomAnchor, constant: 16),
             closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
