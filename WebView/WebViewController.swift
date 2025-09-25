@@ -6316,8 +6316,10 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
             
             if isFreePlay {
                 print("✅ Rookie mode detected (selectedBalanceId \(selectedBalanceId))")
+                UserManager.shared.isRookieMode = true
             } else {
                 print("✅ Pro mode detected (selectedBalanceId \(selectedBalanceId))")
+                UserManager.shared.isRookieMode = false
                 owner?.presentProShop()
             }
 
