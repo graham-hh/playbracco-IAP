@@ -5476,29 +5476,44 @@ if (!window.flutter_inappwebview) {
 
         // --- Inject JS to capture mode selection directly on Pro/Rookie boxes ---
         let injectModeSelectorJS = """
-var proEl = document.querySelector('.MuiStack-root.css-cm38so');
-if (proEl && !proEl.hasAttribute('data-native-handler')) {
-  proEl.setAttribute('data-native-handler', 'true');
-  proEl.addEventListener('click', function() {
-    window.flutter_inappwebview.postMessage({
-      balances: { "main": {}, "2": {} },
-      selectedBalance: "main"
-    });
-    console.log("✅ Pro mode sent to native");
-  });
-}
+(function() {
+  function attachModeHandlers() {
+    // Look for Pro by text
+    var proEl = Array.from(document.querySelectorAll('div'))
+      .find(el => (el.innerText || '').toUpperCase().includes('BRACCO PRO'));
+    if (proEl && !proEl.hasAttribute('data-native-handler')) {
+      proEl.setAttribute('data-native-handler', 'true');
+      proEl.addEventListener('click', function() {
+        window.flutter_inappwebview.postMessage({
+          balances: { "main": {}, "2": {} },
+          selectedBalance: "main"
+        });
+        console.log("✅ Pro mode sent to native");
+      });
+    }
 
-var rookieEl = document.querySelector('.MuiBox-root.css-sre1yv');
-if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
-  rookieEl.setAttribute('data-native-handler', 'true');
-  rookieEl.addEventListener('click', function() {
-    window.flutter_inappwebview.postMessage({
-      balances: { "main": {}, "2": {} },
-      selectedBalance: "2"
-    });
-    console.log("✅ Rookie mode sent to native");
-  });
-}
+    // Look for Rookie by text
+    var rookieEl = Array.from(document.querySelectorAll('div'))
+      .find(el => (el.innerText || '').toUpperCase().includes('ROOKIE'));
+    if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
+      rookieEl.setAttribute('data-native-handler', 'true');
+      rookieEl.addEventListener('click', function() {
+        window.flutter_inappwebview.postMessage({
+          balances: { "main": {}, "2": {} },
+          selectedBalance: "2"
+        });
+        console.log("✅ Rookie mode sent to native");
+      });
+    }
+  }
+
+  // Initial run
+  attachModeHandlers();
+
+  // Re-run if DOM changes
+  var obs = new MutationObserver(attachModeHandlers);
+  obs.observe(document.documentElement, { childList: true, subtree: true });
+})();
 """
         let injectModeScript = WKUserScript(source: injectModeSelectorJS, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(injectModeScript)
