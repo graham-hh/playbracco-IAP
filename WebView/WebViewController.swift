@@ -6306,6 +6306,7 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
         guard message.name == "balances" else { return }
         
         print("📩 Received balances message: \(message.body)")
+        print("✅ BalanceUpdateProxy handler triggered at \(Date())")
 
         if let body = message.body as? [String: Any],
            let balances = body["balances"] as? [String: Any],
