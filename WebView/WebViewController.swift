@@ -6323,19 +6323,35 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "flutter_inappwebview" else { return }
 
-        print("📩 Received flutter_inappwebview message: \(message.body)")
+        print("📩 Received flutter_inappwebview message:")
+        print("📩 RAW message.body = \(message.body)")
+        if let dict = message.body as? [String: Any] {
+            for (key, value) in dict {
+                print("   key=\(key), value=\(value)")
+            }
+        }
         print("✅ BalanceUpdateProxy handler triggered at \(Date())")
 
-        // New logic for Rookie/Pro mode detection
-        if let body = message.body as? [String: Any],
-           let balances = body["balances"] as? [String: Any] {
+        // Expanded logic for Rookie/Pro mode detection and nested object support
+        if let body = message.body as? [String: Any] {
+            var balancesDict: [String: Any]? = nil
+            var selectedKey: String? = nil
 
-            var selectedKey: String?
-
-            if let sb = body["selectedBalance"] as? Int {
-                selectedKey = "\(sb)"
-            } else if let sb = body["selectedBalance"] as? String {
-                selectedKey = sb
+            if let balances = body["balances"] as? [String: Any] {
+                balancesDict = balances
+                if let sb = body["selectedBalance"] as? Int {
+                    selectedKey = "\(sb)"
+                } else if let sb = body["selectedBalance"] as? String {
+                    selectedKey = sb
+                }
+            } else if let event = body["event"] as? String, event == "balances",
+                      let data = body["data"] as? [String: Any] {
+                balancesDict = data["balances"] as? [String: Any]
+                if let sb = data["selectedBalance"] as? Int {
+                    selectedKey = "\(sb)"
+                } else if let sb = data["selectedBalance"] as? String {
+                    selectedKey = sb
+                }
             }
 
             if let key = selectedKey {
