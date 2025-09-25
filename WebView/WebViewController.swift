@@ -5456,6 +5456,24 @@ private func addWebViewToMainView(_ webView: WKWebView)
         // Register balanceUpdate listener safely
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "flutter_inappwebview")
         webView.configuration.userContentController.add(BalanceUpdateProxy(owner: self), name: "flutter_inappwebview")
+        // Inject flutter_inappwebview JS shim bridge
+        let bridgeShimJS = """
+if (!window.flutter_inappwebview) {
+  window.flutter_inappwebview = {
+    postMessage: function(data) {
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.flutter_inappwebview) {
+        window.webkit.messageHandlers.flutter_inappwebview.postMessage(data);
+      } else {
+        console.log("❌ No native handler found for flutter_inappwebview");
+      }
+    }
+  };
+  console.log("✅ flutter_inappwebview shim attached to WKWebView");
+}
+"""
+        let shimScript = WKUserScript(source: bridgeShimJS, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        webView.configuration.userContentController.addUserScript(shimScript)
+
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
         
