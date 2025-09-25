@@ -6787,3 +6787,42 @@ extension WebViewController {
     }
 }
 
+
+// MARK: - WKNavigationDelegate: didFinish (Inject initial mode check JS)
+extension WebViewController {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("✅ WebView finished loading")
+
+        let js = """
+        (function() {
+          try {
+            if (typeof window.flutter_inappwebview !== 'undefined') {
+              if (typeof window.appState !== 'undefined' && window.appState.selectedBalance) {
+                window.flutter_inappwebview.postMessage({
+                  balances: window.appState.balances || {},
+                  selectedBalance: window.appState.selectedBalance
+                });
+                console.log("✅ Initial mode check sent to native: " + window.appState.selectedBalance);
+              } else {
+                console.log("⚠️ No appState.selectedBalance found at load.");
+              }
+            } else {
+              console.log("⚠️ flutter_inappwebview not available at load.");
+            }
+          } catch(e) { console.log("⚠️ Mode check failed at load", e); }
+        })();
+        """
+        webView.evaluateJavaScript(js, completionHandler: { result, error in
+            if let error = error {
+                print("⚠️ JS mode check injection failed: \(error.localizedDescription)")
+            } else {
+                print("✅ JS mode check injected successfully")
+            }
+            // --- Swift-side log of mode after JS injection and UserManager update ---
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                let mode = UserManager.shared.isRookieMode ? "Rookie" : "Pro"
+                print("🎮 Initial mode at app load: \(mode)")
+            }
+        })
+    }
+}
