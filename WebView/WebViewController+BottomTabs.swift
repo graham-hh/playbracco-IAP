@@ -13,163 +13,6 @@ import Foundation
 import AppsFlyerLib
 #endif
 
-// MARK: - Native "Shop" bottom sheet
-private final class BraccoShopSheetViewController: UIViewController {
-
-    // Customize these if needed:
-    private let externalURL = URL(string: "https://playbracco.com/bracco-coins")!
-    private let titleText   = "Purchase Bracco Coins"
-    private let bodyText    = "This purchase will open your browser. Coins are used for gameplay."
-    private let imageName   = "shop-coins" // Add this to Assets, or change the name
-
-    // MARK: - Style
-    struct Style {
-        var backgroundColor: UIColor
-        var titleFont: UIFont
-        var titleColor: UIColor
-        var bodyFont: UIFont
-        var bodyColor: UIColor
-        var ctaBackgroundColor: UIColor
-        var ctaTextColor: UIColor
-
-        static func defaultStyle() -> Style {
-            let bold = UIFont(name: "JetBrainsMono-Bold", size: 20) ?? .systemFont(ofSize: 20, weight: .bold)
-            let regular = UIFont(name: "JetBrainsMono-Bold", size: 16) ?? .systemFont(ofSize: 16, weight: .regular)
-            return Style(
-                backgroundColor: .systemBackground,
-                titleFont: bold,
-                titleColor: .label,
-                bodyFont: regular,
-                bodyColor: .secondaryLabel,
-                ctaBackgroundColor: UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0),
-                ctaTextColor: .white
-            )
-        }
-    }
-    static var style: Style = Style.defaultStyle()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = Self.style.backgroundColor
-
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = 14
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        // Top spacer for extra padding above the coin artwork
-        let topSpacer = UIView()
-        topSpacer.translatesAutoresizingMaskIntoConstraints = false
-        topSpacer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        let img = UIImage(named: imageName)
-        let imgView = UIImageView(image: img)
-        imgView.contentMode = .scaleAspectFit
-        imgView.clipsToBounds = false
-        imgView.translatesAutoresizingMaskIntoConstraints = false
-        imgView.setContentHuggingPriority(.required, for: .vertical)
-        imgView.setContentCompressionResistancePriority(.required, for: .vertical)
-        // Fixed width to match mock, height derived from image aspect ratio
-        imgView.widthAnchor.constraint(equalToConstant: 260).isActive = true // 260pt
-        if let img = img, img.size.width > 0 {
-            imgView.heightAnchor.constraint(equalTo: imgView.widthAnchor, multiplier: img.size.height / img.size.width).isActive = true
-        }
-
-        let title = UILabel()
-        title.text = titleText
-        title.textAlignment = .center
-        title.font = Self.style.titleFont
-        title.numberOfLines = 0
-        title.textColor = Self.style.titleColor
-        title.lineBreakMode = .byWordWrapping
-        title.allowsDefaultTighteningForTruncation = true
-        title.setContentHuggingPriority(.required, for: .vertical)
-        title.setContentCompressionResistancePriority(.required, for: .vertical)
-
-        let body = UILabel()
-        body.text = bodyText
-        body.textAlignment = .center
-        body.font = Self.style.bodyFont
-        body.textColor = Self.style.bodyColor
-        body.numberOfLines = 0
-        body.lineBreakMode = .byWordWrapping
-        body.setContentHuggingPriority(.required, for: .vertical)
-        body.setContentCompressionResistancePriority(.required, for: .vertical)
-
-        let cta = UIButton(type: .system)
-        // Background matches mock's orange rounded pill
-        cta.backgroundColor = Self.style.ctaBackgroundColor
-        cta.layer.cornerRadius = 14
-        cta.layer.masksToBounds = true
-        cta.setTitle(nil, for: .normal)
-        cta.tintColor = .white
-        cta.adjustsImageWhenHighlighted = false
-        cta.accessibilityLabel = "Purchase Bracco Coins"
-
-        // Embed a dedicated image view for exact size control of CTA text artwork
-        let ctaImageView = UIImageView(image: UIImage(named: "CTA-text")?.withRenderingMode(.alwaysOriginal))
-        ctaImageView.translatesAutoresizingMaskIntoConstraints = false
-        ctaImageView.contentMode = .scaleAspectFit
-        cta.addSubview(ctaImageView)
-        NSLayoutConstraint.activate([
-            ctaImageView.centerXAnchor.constraint(equalTo: cta.centerXAnchor),
-            ctaImageView.centerYAnchor.constraint(equalTo: cta.centerYAnchor),
-            ctaImageView.widthAnchor.constraint(equalToConstant: 226), // 226pt fixed width
-            ctaImageView.heightAnchor.constraint(equalTo: ctaImageView.widthAnchor, multiplier: (ctaImageView.image?.size.height ?? 1) / max((ctaImageView.image?.size.width ?? 1), 1))
-        ])
-
-        // Button size & insets to match mock: 350x50
-        cta.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        cta.widthAnchor.constraint(equalToConstant: 350).isActive = true
-        cta.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        cta.addTarget(self, action: #selector(openExternal), for: .touchUpInside)
-
-        let close = UIButton(type: .system)
-        close.setTitle("Close", for: .normal)
-        close.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-
-        stack.addArrangedSubview(topSpacer)
-        stack.addArrangedSubview(imgView)
-        stack.addArrangedSubview(title)
-        stack.addArrangedSubview(body)
-        stack.addArrangedSubview(cta)
-        stack.setCustomSpacing(30, after: body)
-        // Tighten spacing between coin image → title and title → body
-        stack.setCustomSpacing(20, after: imgView)
-        stack.setCustomSpacing(6, after: title)
-
-        view.addSubview(stack)
-        view.addSubview(close)
-        cta.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            stack.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -6),
-
-            close.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            close.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
-            cta.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -22),
-        ])
-
-        if let sheet = presentationController as? UISheetPresentationController {
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 16
-            sheet.largestUndimmedDetentIdentifier = nil // always dim to block interaction below
-        }
-    }
-
-    @objc private func openExternal() {
-        UIApplication.shared.open(externalURL, options: [:], completionHandler: nil)
-    }
-
-    @objc private func closeTapped() {
-        dismiss(animated: true, completion: nil)
-    }
-}
 
 // MARK: - 🔧 STYLE CONFIG (edit these)
 private enum BottomTabStyle {
@@ -742,17 +585,6 @@ extension WebViewController: UITabBarDelegate {
         ucc.removeScriptMessageHandler(forName: "login")
         ucc.add(self, name: "login")
 
-        // Apply custom Shop sheet styling
-        let custom = BraccoShopSheetViewController.Style(
-            backgroundColor: UIColor(red: 87/255.0, green: 22/255.0, blue: 0/255.0, alpha: 1.0),
-            titleFont: UIFont(name: "JetBrainsMono-Bold", size: 22) ?? .systemFont(ofSize: 22, weight: .bold),
-            titleColor: .white,
-            bodyFont: UIFont(name: "JetBrainsMono-Bold", size: 15) ?? .systemFont(ofSize: 15, weight: .regular),
-            bodyColor: UIColor(white: 1, alpha: 0.8),
-            ctaBackgroundColor: UIColor(red: 1.06, green: 0.34, blue: 0.13, alpha: 1.0),
-            ctaTextColor: .white
-        )
-        setShopSheetStyle(custom)
 
         let bar = UITabBar(frame: .zero)
         bar.alpha = 0
@@ -979,15 +811,12 @@ extension WebViewController: UITabBarDelegate {
                 tabBar.selectedItem = tabBar.items?.first
                 setAssoc(self, &_lastSelectedIndexKey, NSNumber(value: 0))
             }
-
-            // wvg_debugToast("Opening Shop")
-            // Rookie mode: present ShopViewController as a pageSheet modal; else present shop sheet
             if UserManager.shared.isRookieMode {
                 let shopVC = ShopViewController()
                 shopVC.modalPresentationStyle = .pageSheet
                 self.present(shopVC, animated: true, completion: nil)
             } else {
-                presentShopSheet()
+                self.presentProShop()
             }
             return
         }
@@ -1022,90 +851,6 @@ extension WebViewController: UITabBarDelegate {
         wvg_applyPageHacks()
     }
 
-    private func presentShopSheet() {
-        print("WVG BottomTabs: presentShopSheet()")
-        // wvg_debugToast("Opening Shop")
-
-        let sheetVC = BraccoShopSheetViewController()
-
-        // Configure preferred presentation styles
-        if #available(iOS 16.0, *) {
-            sheetVC.modalPresentationStyle = .pageSheet
-            if let spc = sheetVC.presentationController as? UISheetPresentationController {
-                let small = UISheetPresentationController.Detent.custom(identifier: .init("braccoSmall")) { _ in
-                    return 384 // fixed height in points for the sheet card
-                }
-                spc.detents = [small]
-                spc.selectedDetentIdentifier = small.identifier
-                spc.prefersScrollingExpandsWhenScrolledToEdge = false
-                spc.prefersGrabberVisible = true
-                spc.largestUndimmedDetentIdentifier = nil // dim background; block interactions below
-            }
-        } else if #available(iOS 15.0, *) {
-            sheetVC.modalPresentationStyle = .pageSheet
-            if let spc = sheetVC.presentationController as? UISheetPresentationController {
-                spc.detents = [.medium()]
-                spc.selectedDetentIdentifier = .medium
-                spc.prefersGrabberVisible = true
-                spc.largestUndimmedDetentIdentifier = nil // dim background; block interactions below
-            }
-        } else {
-            // Fallback for iOS < 15
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                sheetVC.modalPresentationStyle = .formSheet
-                sheetVC.preferredContentSize = CGSize(width: 520, height: 480)
-            } else {
-                sheetVC.modalPresentationStyle = .overFullScreen
-                sheetVC.view.backgroundColor = BraccoShopSheetViewController.style.backgroundColor.withAlphaComponent(0.98)
-            }
-        }
-
-        // Helper to find the top-most presenting controller reliably
-        func topMostPresenter(from root: UIViewController?) -> UIViewController? {
-            guard let root = root else { return nil }
-            var top = root
-            // Follow presented chain
-            while let presented = top.presentedViewController {
-                top = presented
-            }
-            // If we ended on a UINavigationController / UITabBarController, use its visible child
-            if let nav = top as? UINavigationController {
-                return topMostPresenter(from: nav.visibleViewController ?? nav.topViewController)
-            }
-            if let tabs = top as? UITabBarController {
-                return topMostPresenter(from: tabs.selectedViewController ?? tabs)
-            }
-            return top
-        }
-
-        DispatchQueue.main.async {
-            // Prefer presenting from `self`'s hierarchy if possible
-            var root: UIViewController? = self
-            if root?.view.window == nil {
-                // Fallback to the app's key window root if our view is not in a window yet
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let win = scene.windows.first(where: { $0.isKeyWindow }) {
-                    root = win.rootViewController
-                } else {
-                    root = UIApplication.shared.windows.first?.rootViewController
-                }
-            }
-
-            guard let presenter = topMostPresenter(from: root) else {
-                print("WVG BottomTabs: presentShopSheet() — no presenter found")
-                return
-            }
-
-            // Avoid double-presenting the sheet
-            if presenter.presentedViewController is BraccoShopSheetViewController {
-                print("WVG BottomTabs: Shop sheet already presented")
-                return
-            }
-
-            print("WVG BottomTabs: presenting from \(type(of: presenter))")
-            presenter.present(sheetVC, animated: true, completion: nil)
-        }
-    }
 
     // MARK: Insets helper
     private func applyWebViewInsets(forBarVisible visible: Bool) {
@@ -1309,13 +1054,6 @@ extension WebViewController: UITabBarDelegate {
     }
 }
 
-// MARK: - Shop Sheet Style API
-extension WebViewController {
-    /// Set global style for the Shop bottom sheet.
-    fileprivate func setShopSheetStyle(_ style: BraccoShopSheetViewController.Style) {
-        BraccoShopSheetViewController.style = style
-    }
-}
 
 
 
