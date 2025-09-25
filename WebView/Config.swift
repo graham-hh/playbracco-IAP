@@ -20,8 +20,8 @@ var app_admin_email = "app_admin@example.org"
 // *** Your Website ***
 
 // 4. Enter your website details here:
-var host = "game.playbracco.com" //Set your domain host without http:// or https:// prefixes and without any subdomain like "www."
-var webviewurl = "https://game.playbracco.com" //Set your full web app/website URL including http:// or https:// prefix and including subdomains if they are in your URL, like "www.", for example
+var host = "mobile.playbracco.com" //Set your domain host without http:// or https:// prefixes and without any subdomain like "www."
+var webviewurl = "https://mobile.playbracco.com" //Set your full web app/website URL including http:// or https:// prefix and including subdomains if they are in your URL, like "www.", for example
 
 // 5. You are all done! Enjoy your app! :-)
 
