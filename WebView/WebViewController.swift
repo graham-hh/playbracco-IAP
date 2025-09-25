@@ -5474,20 +5474,44 @@ if (!window.flutter_inappwebview) {
         let shimScript = WKUserScript(source: bridgeShimJS, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(shimScript)
 
-        // --- Inject JS to capture mode selection on the mode selector page ---
+        // --- Inject JS to capture mode selection directly on Pro/Rookie boxes ---
         let injectModeSelectorJS = """
-document.addEventListener('click', function(e) {
-  if (e.target && e.target.innerText && e.target.innerText.toUpperCase().includes('CONFIRM')) {
-    let selectedCard = Array.from(document.querySelectorAll('div'))
-      .find(div => div.innerText && div.innerText.includes('SELECTED'));
-    let selected = (selectedCard && selectedCard.innerText.includes('BRACCO PRO')) ? "main" : "2";
-    window.flutter_inappwebview.postMessage({
-      balances: { "main": {}, "2": {} },
-      selectedBalance: selected
-    });
-    console.log("✅ Mode selector sent to native: " + selected);
+(function() {
+  function attachModeHandlers() {
+    // Pro element
+    var proEl = document.querySelector('.MuiStack-root.css-cm38so');
+    if (proEl && !proEl.hasAttribute('data-native-handler')) {
+      proEl.setAttribute('data-native-handler', 'true');
+      proEl.addEventListener('click', function() {
+        window.flutter_inappwebview.postMessage({
+          balances: { "main": {}, "2": {} },
+          selectedBalance: "main"
+        });
+        console.log("✅ Pro mode sent to native");
+      });
+    }
+
+    // Rookie element
+    var rookieEl = document.querySelector('.MuiBox-root.css-sre1yv');
+    if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
+      rookieEl.setAttribute('data-native-handler', 'true');
+      rookieEl.addEventListener('click', function() {
+        window.flutter_inappwebview.postMessage({
+          balances: { "main": {}, "2": {} },
+          selectedBalance: "2"
+        });
+        console.log("✅ Rookie mode sent to native");
+      });
+    }
   }
-});
+
+  // Initial attach
+  attachModeHandlers();
+
+  // Observe for React re-renders
+  var obs = new MutationObserver(attachModeHandlers);
+  obs.observe(document.documentElement, { childList: true, subtree: true });
+})();
 """
         let injectModeScript = WKUserScript(source: injectModeSelectorJS, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(injectModeScript)
