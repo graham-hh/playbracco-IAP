@@ -135,6 +135,33 @@ final class BraccoProShopViewController: UIViewController {
 }
 
 
+// MARK: - Debug Toggle Rookie/Pro Mode Gesture
+extension WebViewController {
+#if DEBUG
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        let tripleTap = UITapGestureRecognizer(target: self, action: #selector(debugToggleMode))
+        tripleTap.numberOfTapsRequired = 3
+        tripleTap.numberOfTouchesRequired = 2
+        self.view.addGestureRecognizer(tripleTap)
+    }
+
+    @objc private func debugToggleMode() {
+        let current = UserManager.shared.isRookieMode
+        UserManager.shared.isRookieMode = !current
+        let newMode = UserManager.shared.isRookieMode ? "Rookie" : "Pro"
+        print("🔄 Debug toggle: switched to \(newMode) mode")
+
+        let alert = UIAlertController(title: "Debug Mode Switch",
+                                      message: "Now in \(newMode) mode",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+#endif
+}
+
+
 protocol IAPurchaceViewControllerDelegate
 {
     func didBuyColorsCollection(collectionIndex: Int)
