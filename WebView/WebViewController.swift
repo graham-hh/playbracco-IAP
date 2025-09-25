@@ -5478,9 +5478,8 @@ if (!window.flutter_inappwebview) {
         let injectModeSelectorJS = """
 (function() {
   function attachModeHandlers() {
-    // Look for Pro by text
-    var proEl = Array.from(document.querySelectorAll('div'))
-      .find(el => (el.innerText || '').toUpperCase().includes('BRACCO PRO'));
+    // Pro button
+    var proEl = document.querySelector('button[data-testid="pro-button"]');
     if (proEl && !proEl.hasAttribute('data-native-handler')) {
       proEl.setAttribute('data-native-handler', 'true');
       proEl.addEventListener('click', function() {
@@ -5492,9 +5491,8 @@ if (!window.flutter_inappwebview) {
       });
     }
 
-    // Look for Rookie by text
-    var rookieEl = Array.from(document.querySelectorAll('div'))
-      .find(el => (el.innerText || '').toUpperCase().includes('ROOKIE'));
+    // Rookie button
+    var rookieEl = document.querySelector('button[data-testid="rookie-button"]');
     if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
       rookieEl.setAttribute('data-native-handler', 'true');
       rookieEl.addEventListener('click', function() {
@@ -5510,7 +5508,7 @@ if (!window.flutter_inappwebview) {
   // Initial run
   attachModeHandlers();
 
-  // Re-run if DOM changes
+  // Re-run if DOM changes (React re-renders)
   var obs = new MutationObserver(attachModeHandlers);
   obs.observe(document.documentElement, { childList: true, subtree: true });
 })();
