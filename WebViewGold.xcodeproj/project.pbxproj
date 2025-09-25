@@ -71,6 +71,7 @@
 		69223BA72E722C96007D6117 /* BraccoStoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 69223BA62E722C96007D6117 /* BraccoStoreKit.storekit */; };
 		693694F32E62785700A43BBD /* ShopSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 693694F22E62784B00A43BBD /* ShopSheetViewController.swift */; };
 		694A5B1C2E47A29C00770E00 /* WebViewController+BottomTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694A5B1B2E47A29200770E00 /* WebViewController+BottomTabs.swift */; };
+		6959F9332E84959200DEE35F /* ProShopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6959F9322E84958A00DEE35F /* ProShopViewController.swift */; };
 		695CFB1A2E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 695CFB192E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf */; };
 		695CFB1C2E4A5BDA004FD323 /* JetBrainsMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 695CFB1B2E4A5BDA004FD323 /* JetBrainsMono-Medium.ttf */; };
 		695CFB212E4A6E01004FD323 /* AppsFlyerLib in Frameworks */ = {isa = PBXBuildFile; productRef = 695CFB202E4A6E01004FD323 /* AppsFlyerLib */; };
@@ -181,6 +182,7 @@
 		69223BA62E722C96007D6117 /* BraccoStoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = BraccoStoreKit.storekit; sourceTree = "<group>"; };
 		693694F22E62784B00A43BBD /* ShopSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopSheetViewController.swift; sourceTree = "<group>"; };
 		694A5B1B2E47A29200770E00 /* WebViewController+BottomTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebViewController+BottomTabs.swift"; sourceTree = "<group>"; };
+		6959F9322E84958A00DEE35F /* ProShopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProShopViewController.swift; sourceTree = "<group>"; };
 		695CFB192E4A5BCB004FD323 /* JetBrainsMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Bold.ttf"; sourceTree = "<group>"; };
 		695CFB1B2E4A5BDA004FD323 /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
 		697471882E70E0500042B20D /* ShopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewController.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 		8171D20A1F6B096F00AA7B99 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
+				6959F9322E84958A00DEE35F /* ProShopViewController.swift */,
 				6982EA342E7DC0AD0067D7AA /* WebViewController+Bridge.swift */,
 				6974718C2E70E1170042B20D /* UserManager.swift */,
 				6974718A2E70E0B60042B20D /* IAPManager.swift */,
@@ -736,6 +739,7 @@
 				521CB4FD2D9413E90055B53A /* FlashLightManager.swift in Sources */,
 				04FCA891242DEBD100867141 /* QrcodeVC.swift in Sources */,
 				1F25A7752049C8D4008132D3 /* SVRadialGradientLayer.m in Sources */,
+				6959F9332E84959200DEE35F /* ProShopViewController.swift in Sources */,
 				04B99B09243B1415006E9F16 /* LoadindexpageVC.swift in Sources */,
 				4931B4AB25FB859200E2F1A4 /* Config.swift in Sources */,
 				3FC779DA2D6BF1B2006198F1 /* UIViewController+Extensions.swift in Sources */,
