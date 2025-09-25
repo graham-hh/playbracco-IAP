@@ -138,14 +138,6 @@ final class BraccoProShopViewController: UIViewController {
 // MARK: - Debug Toggle Rookie/Pro Mode Gesture
 extension WebViewController {
 #if DEBUG
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        let tripleTap = UITapGestureRecognizer(target: self, action: #selector(debugToggleMode))
-        tripleTap.numberOfTapsRequired = 3
-        tripleTap.numberOfTouchesRequired = 2
-        self.view.addGestureRecognizer(tripleTap)
-    }
-
     @objc private func debugToggleMode() {
         let current = UserManager.shared.isRookieMode
         UserManager.shared.isRookieMode = !current
@@ -649,6 +641,12 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
     override func viewDidLoad()
     {
         super.viewDidLoad()
+#if DEBUG
+        let tripleTap = UITapGestureRecognizer(target: self, action: #selector(debugToggleMode))
+        tripleTap.numberOfTapsRequired = 3
+        tripleTap.numberOfTouchesRequired = 2
+        self.view.addGestureRecognizer(tripleTap)
+#endif
         NotificationCenter.default.addObserver(self, selector: #selector(tokenReceived(_:)), name: Notification.Name("FCMTokenReceived"), object: nil)
         if (deletecacheonexit){
             NotificationCenter.default.addObserver(self, selector: #selector(self.cleanWebViewData), name: NSNotification.Name("ApplicationWillTerminate"), object: nil)
