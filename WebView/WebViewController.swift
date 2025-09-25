@@ -5454,8 +5454,8 @@ private func addWebViewToMainView(_ webView: WKWebView)
         installCoinsHiderUserScript(on: webView)
         installStatusBarSafeAreaStyle(on: webView)
         // Register balanceUpdate listener safely
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: "balances")
-        webView.configuration.userContentController.add(BalanceUpdateProxy(owner: self), name: "balances")
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "flutter_inappview")
+        webView.configuration.userContentController.add(BalanceUpdateProxy(owner: self), name: "flutter_inappview")
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -6303,9 +6303,9 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        guard message.name == "balances" else { return }
+        guard message.name == "flutter_inappview" else { return }
 
-        print("📩 Received balances message: \(message.body)")
+        print("📩 Received flutter_inappview message: \(message.body)")
         print("✅ BalanceUpdateProxy handler triggered at \(Date())")
 
         // New logic for Rookie/Pro mode detection
