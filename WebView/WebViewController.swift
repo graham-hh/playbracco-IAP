@@ -5474,6 +5474,25 @@ if (!window.flutter_inappwebview) {
         let shimScript = WKUserScript(source: bridgeShimJS, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(shimScript)
 
+        // --- Inject JS to capture mode selection on the mode selector page ---
+        let injectModeSelectorJS = """
+document.addEventListener('click', function(e) {
+  if (e.target && e.target.innerText && e.target.innerText.toUpperCase().includes('CONFIRM')) {
+    let selectedCard = Array.from(document.querySelectorAll('div'))
+      .find(div => div.innerText && div.innerText.includes('SELECTED'));
+    let selected = (selectedCard && selectedCard.innerText.includes('BRACCO PRO')) ? "main" : "2";
+    window.flutter_inappwebview.postMessage({
+      balances: { "main": {}, "2": {} },
+      selectedBalance: selected
+    });
+    console.log("✅ Mode selector sent to native: " + selected);
+  }
+});
+"""
+        let injectModeScript = WKUserScript(source: injectModeSelectorJS, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        webView.configuration.userContentController.addUserScript(injectModeScript)
+        // --- End mode selector JS injection ---
+
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
         
