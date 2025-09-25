@@ -5476,42 +5476,29 @@ if (!window.flutter_inappwebview) {
 
         // --- Inject JS to capture mode selection directly on Pro/Rookie boxes ---
         let injectModeSelectorJS = """
-(function() {
-  function attachModeHandlers() {
-    // Pro element
-    var proEl = document.querySelector('.MuiStack-root.css-cm38so');
-    if (proEl && !proEl.hasAttribute('data-native-handler')) {
-      proEl.setAttribute('data-native-handler', 'true');
-      proEl.addEventListener('click', function() {
-        window.flutter_inappwebview.postMessage({
-          balances: { "main": {}, "2": {} },
-          selectedBalance: "main"
-        });
-        console.log("✅ Pro mode sent to native");
-      });
-    }
+var proEl = document.querySelector('.MuiStack-root.css-cm38so');
+if (proEl && !proEl.hasAttribute('data-native-handler')) {
+  proEl.setAttribute('data-native-handler', 'true');
+  proEl.addEventListener('click', function() {
+    window.flutter_inappwebview.postMessage({
+      balances: { "main": {}, "2": {} },
+      selectedBalance: "main"
+    });
+    console.log("✅ Pro mode sent to native");
+  });
+}
 
-    // Rookie element
-    var rookieEl = document.querySelector('.MuiBox-root.css-sre1yv');
-    if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
-      rookieEl.setAttribute('data-native-handler', 'true');
-      rookieEl.addEventListener('click', function() {
-        window.flutter_inappwebview.postMessage({
-          balances: { "main": {}, "2": {} },
-          selectedBalance: "2"
-        });
-        console.log("✅ Rookie mode sent to native");
-      });
-    }
-  }
-
-  // Initial attach
-  attachModeHandlers();
-
-  // Observe for React re-renders
-  var obs = new MutationObserver(attachModeHandlers);
-  obs.observe(document.documentElement, { childList: true, subtree: true });
-})();
+var rookieEl = document.querySelector('.MuiBox-root.css-sre1yv');
+if (rookieEl && !rookieEl.hasAttribute('data-native-handler')) {
+  rookieEl.setAttribute('data-native-handler', 'true');
+  rookieEl.addEventListener('click', function() {
+    window.flutter_inappwebview.postMessage({
+      balances: { "main": {}, "2": {} },
+      selectedBalance: "2"
+    });
+    console.log("✅ Rookie mode sent to native");
+  });
+}
 """
         let injectModeScript = WKUserScript(source: injectModeSelectorJS, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(injectModeScript)
@@ -6401,7 +6388,6 @@ final class BalanceUpdateProxy: NSObject, WKScriptMessageHandler {
                 if key == "main" {
                     print("✅ Pro mode detected (selectedBalanceId \(key))")
                     UserManager.shared.isRookieMode = false
-                    owner?.presentProShop()
                 } else {
                     print("✅ Rookie mode detected (selectedBalanceId \(key))")
                     UserManager.shared.isRookieMode = true
