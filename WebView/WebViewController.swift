@@ -1,3 +1,9 @@
+// Associated-object keys for WKScriptMessageHandler bridges
+private var _balanceProxyKey: UInt8 = 0
+private var _afHandlerKey: UInt8 = 0
+private var _modeBridgeKey: UInt8 = 0
+private var _loginBridgeKey: UInt8 = 0
+
 //  OnlineAppCreator.com
 //  WebViewGold for iOS // webviewgold.com
 
@@ -903,10 +909,18 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
-        config.userContentController.add(self, name: "flutter_inappwebview")
-        config.userContentController.add(self, name: "balances")
-        config.userContentController.add(self, name: "mode")
-        config.userContentController.add(self, name: "login")
+        let balanceProxy = BalanceUpdateProxy(owner: self)
+        setAssoc(self, &_balanceProxyKey, balanceProxy)
+        config.userContentController.add(balanceProxy, name: "flutter_inappwebview")
+        config.userContentController.add(balanceProxy, name: "balances")
+
+        let modeBridge = ModeBridge(owner: self)
+        setAssoc(self, &_modeBridgeKey, modeBridge)
+        config.userContentController.add(modeBridge, name: "mode")
+
+        let loginBridge = LoginBridge(owner: self)
+        setAssoc(self, &_loginBridgeKey, loginBridge)
+        config.userContentController.add(loginBridge, name: "login")
         print("WKScriptMessageHandler 'flutter_inappwebview' attached and waiting…")
         // === BalanceUpdate test injector (for debugging Rookie/Pro state) ===
         let balanceTestJS = """
@@ -5456,9 +5470,23 @@ private func addWebViewToMainView(_ webView: WKWebView)
         navigatorGeolocation.setWebView(webView: webView)
         installCoinsHiderUserScript(on: webView)
         installStatusBarSafeAreaStyle(on: webView)
-        // Register balanceUpdate listener safely
+        // Register script message handlers using dedicated bridge classes
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "flutter_inappwebview")
-        webView.configuration.userContentController.add(BalanceUpdateProxy(owner: self), name: "flutter_inappwebview")
+        let balanceProxy = BalanceUpdateProxy(owner: self)
+        setAssoc(self, &_balanceProxyKey, balanceProxy)
+        webView.configuration.userContentController.add(balanceProxy, name: "flutter_inappwebview")
+
+        let afHandler = AFBridgeHandler(owner: self)
+        setAssoc(self, &_afHandlerKey, afHandler)
+        webView.configuration.userContentController.add(afHandler, name: "afBridge")
+
+        let modeBridge = ModeBridge(owner: self)
+        setAssoc(self, &_modeBridgeKey, modeBridge)
+        webView.configuration.userContentController.add(modeBridge, name: "mode")
+
+        let loginBridge = LoginBridge(owner: self)
+        setAssoc(self, &_loginBridgeKey, loginBridge)
+        webView.configuration.userContentController.add(loginBridge, name: "login")
         // Inject flutter_inappwebview JS shim bridge
         let bridgeShimJS = """
 if (!window.flutter_inappwebview) {
