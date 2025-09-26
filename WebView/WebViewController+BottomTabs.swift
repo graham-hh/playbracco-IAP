@@ -559,7 +559,7 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(pageChangedListenerJS, completionHandler: nil)
 
-        // Inject JS to detect mode from header and send to iOS app (robust retrying header detector)
+        // Inject JS to detect mode from header and send to iOS app (robust retrying header detector, faster interval, clears on detect)
         let detectModeHeaderJS = """
         (function() {
           function detectModeFromHeader() {
@@ -570,16 +570,18 @@ extension WebViewController: UITabBarDelegate {
               if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.mode) {
                 window.webkit.messageHandlers.mode.postMessage(mode);
               }
-              console.log("✅ Mode header detected:", mode, "from text:", txt);
+              console.log("✅ Mode header detected quickly:", mode, "from text:", txt);
+              if (window.__modeHeaderInterval__) {
+                clearInterval(window.__modeHeaderInterval__);
+                window.__modeHeaderInterval__ = null;
+              }
             } else {
               console.log("⚠️ Mode header not found, retrying...");
             }
           }
           detectModeFromHeader();
-          // Re-run detection every 2s to ensure it catches when DOM renders
-          if (!window.__modeHeaderIntervalInstalled__) {
-            window.__modeHeaderIntervalInstalled__ = true;
-            setInterval(detectModeFromHeader, 2000);
+          if (!window.__modeHeaderInterval__) {
+            window.__modeHeaderInterval__ = setInterval(detectModeFromHeader, 400); // faster retry
           }
         })();
         """
