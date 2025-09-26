@@ -845,11 +845,6 @@ extension WebViewController: UITabBarDelegate {
                 tabBar.selectedItem = tabBar.items?.first
                 setAssoc(self, &_lastSelectedIndexKey, NSNumber(value: 0))
             }
-            // Refresh from UserDefaults if available
-            if let lastMode = UserDefaults.standard.object(forKey: "lastMode") as? Bool {
-                UserManager.shared.isRookieMode = lastMode
-                print("🎮 Restored lastMode in BottomTabs: \(lastMode ? "Rookie" : "Pro")")
-            }
 
             if UserManager.shared.isRookieMode {
                 // Rookie -> show in-app purchases
