@@ -518,30 +518,6 @@ extension WebViewController: UITabBarDelegate {
         """
         webView.evaluateJavaScript(detectModeJS, completionHandler: nil)
 
-        // Inject JS to detect login state and send to iOS app
-        let detectLoginJS = """
-        (function() {
-          try {
-            function detectLoginAndNotify() {
-              try {
-                var loggedIn = (typeof window.balances !== 'undefined' && typeof window.selectedBalance !== 'undefined');
-                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.login) {
-                  window.webkit.messageHandlers.login.postMessage(loggedIn ? "loggedIn" : "loggedOut");
-                }
-              } catch(e) {
-                // ignore
-              }
-            }
-            detectLoginAndNotify();
-            // Optionally, set up polling if login state changes dynamically:
-            if (!window.__wvgLoginIntervalInstalled__) {
-              window.__wvgLoginIntervalInstalled__ = true;
-              window.__wvgLoginInterval__ = setInterval(detectLoginAndNotify, 3000);
-            }
-          } catch(e) {}
-        })();
-        """
-        webView.evaluateJavaScript(detectLoginJS, completionHandler: nil)
 
         // Inject JS to listen for pageChanged messages from the web app
         let pageChangedListenerJS = """
