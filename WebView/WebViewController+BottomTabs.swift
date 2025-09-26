@@ -606,7 +606,9 @@ extension WebViewController: UITabBarDelegate {
         ucc.add(self, name: "mode")
 
         ucc.removeScriptMessageHandler(forName: "login")
-        ucc.add(self, name: "login")
+        let loginBridge = LoginBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, loginBridge) // you can create a new assoc key if you want
+        ucc.add(loginBridge, name: "login")
 
 
         let bar = UITabBar(frame: .zero)
@@ -1110,6 +1112,41 @@ final class PageChangedBridge: NSObject, WKScriptMessageHandler {
     }
 }
 
+// MARK: - Login bridge handler
+final class LoginBridge: NSObject, WKScriptMessageHandler {
+    weak var owner: WebViewController?
+    init(owner: WebViewController) { self.owner = owner }
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        guard message.name == "login",
+              let state = message.body as? String else { return }
+
+        let isLoggedIn = (state == "loggedIn")
+        UserDefaults.standard.set(isLoggedIn, forKey: "isLoggedIn")
+
+        DispatchQueue.main.async {
+            self.owner?.updateShopTabVisibility(isLoggedIn: isLoggedIn)
+        }
+    }
+}
+
+extension WebViewController {
+    fileprivate func updateShopTabVisibility(isLoggedIn: Bool) {
+        guard let bar = self.bottomTabBar else { return }
+        var items = bar.items ?? []
+        if isLoggedIn {
+            if !items.contains(where: { $0.title == "Shop" }) {
+                let shopItem = UITabBarItem(title: "Shop", image: UIImage(systemName: "cart"), tag: 3)
+                items.append(shopItem)
+            }
+        } else {
+            items.removeAll { $0.title == "Shop" }
+        }
+        bar.items = items
+    }
+}
+
 // MARK: - Bottom tabs show/hide helpers
 extension WebViewController {
     fileprivate func hideBottomTabs() {
@@ -1130,34 +1167,3 @@ extension WebViewController {
 }
 
 
-// MARK: - WKScriptMessageHandler for login bridge
-import WebKit
-
-extension WebViewController: WKScriptMessageHandler {
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        // Handle "login" bridge messages
-        if message.name == "login", let state = message.body as? String {
-            let isLoggedIn = (state == "loggedIn")
-            UserDefaults.standard.set(isLoggedIn, forKey: "isLoggedIn")
-            DispatchQueue.main.async {
-                self.updateShopTabVisibility(isLoggedIn: isLoggedIn)
-            }
-        }
-        // Other handlers may exist; do not interfere
-    }
-
-    /// Dynamically add or remove the Shop tab based on login state
-    private func updateShopTabVisibility(isLoggedIn: Bool) {
-        guard let bar = self.bottomTabBar else { return }
-        var items = bar.items ?? []
-        if isLoggedIn {
-            if items.contains(where: { $0.title == "Shop" }) == false {
-                let shopItem = UITabBarItem(title: "Shop", image: UIImage(systemName: "cart"), tag: 3)
-                items.append(shopItem)
-            }
-        } else {
-            items.removeAll { $0.title == "Shop" }
-        }
-        bar.items = items
-    }
-}
