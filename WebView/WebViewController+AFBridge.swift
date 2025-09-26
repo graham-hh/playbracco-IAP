@@ -1,3 +1,4 @@
+
 //
 //  WebViewController+AFBridge.swift
 //
@@ -70,8 +71,10 @@ extension WebViewController {
                                   forMainFrameOnly: false)
         webView.configuration.userContentController.addUserScript(script)
 
-        // 2) Register self as the handler for afBridgeName messages
-        webView.configuration.userContentController.add(self, name: afBridgeName)
+        // 2) Register dedicated handler for afBridgeName messages
+        let afHandler = AFBridgeHandler(owner: self)
+        setAssoc(self, &_afHandlerKey, afHandler) // retain so it isn’t deallocated
+        webView.configuration.userContentController.add(afHandler, name: afBridgeName)
     }
 
     internal func handleAFBridgeEvent(_ message: WKScriptMessage) {

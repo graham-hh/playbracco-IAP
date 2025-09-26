@@ -8,6 +8,17 @@ import UIKit
 import WebKit
 import ObjectiveC
 
+// MARK: - AF Bridge handler
+final class AFBridgeHandler: NSObject, WKScriptMessageHandler {
+    weak var owner: WebViewController?
+    init(owner: WebViewController) { self.owner = owner }
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        owner?.handleAFBridgeMessage(message)
+    }
+}
+
 #if canImport(AppsFlyerLib)
 import AppsFlyerLib
 #endif
@@ -30,7 +41,8 @@ extension WebViewController {
         guard let webView = self.webView else { return }
         // 1) Install the message handler exactly once
         if !af_getInstalled(self) {
-            webView.configuration.userContentController.add(self, name: "afBridge")
+            let afHandler = AFBridgeHandler(owner: self)
+            webView.configuration.userContentController.add(afHandler, name: "afBridge")
             af_setInstalled(self, true)
         }
         // 2) Inject/update click trackers on this page
