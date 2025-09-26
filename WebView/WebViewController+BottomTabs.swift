@@ -1129,3 +1129,35 @@ extension WebViewController {
     }
 }
 
+
+// MARK: - WKScriptMessageHandler for login bridge
+import WebKit
+
+extension WebViewController: WKScriptMessageHandler {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        // Handle "login" bridge messages
+        if message.name == "login", let state = message.body as? String {
+            let isLoggedIn = (state == "loggedIn")
+            UserDefaults.standard.set(isLoggedIn, forKey: "isLoggedIn")
+            DispatchQueue.main.async {
+                self.updateShopTabVisibility(isLoggedIn: isLoggedIn)
+            }
+        }
+        // Other handlers may exist; do not interfere
+    }
+
+    /// Dynamically add or remove the Shop tab based on login state
+    private func updateShopTabVisibility(isLoggedIn: Bool) {
+        guard let bar = self.bottomTabBar else { return }
+        var items = bar.items ?? []
+        if isLoggedIn {
+            if items.contains(where: { $0.title == "Shop" }) == false {
+                let shopItem = UITabBarItem(title: "Shop", image: UIImage(systemName: "cart"), tag: 3)
+                items.append(shopItem)
+            }
+        } else {
+            items.removeAll { $0.title == "Shop" }
+        }
+        bar.items = items
+    }
+}
