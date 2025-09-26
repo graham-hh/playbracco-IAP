@@ -603,7 +603,9 @@ extension WebViewController: UITabBarDelegate {
 
         // Always remove before adding (idempotent)
         ucc.removeScriptMessageHandler(forName: "mode")
-        ucc.add(self, name: "mode")
+        let modeBridge = ModeBridge(owner: self)
+        setAssoc(self, &_pageChangedBridgeKey, modeBridge) // reuse key or create new if needed
+        ucc.add(modeBridge, name: "mode")
 
         ucc.removeScriptMessageHandler(forName: "login")
         let loginBridge = LoginBridge(owner: self)
@@ -1128,6 +1130,24 @@ final class LoginBridge: NSObject, WKScriptMessageHandler {
         DispatchQueue.main.async {
             self.owner?.updateShopTabVisibility(isLoggedIn: isLoggedIn)
         }
+    }
+}
+
+// MARK: - Mode bridge handler
+final class ModeBridge: NSObject, WKScriptMessageHandler {
+    weak var owner: WebViewController?
+    init(owner: WebViewController) { self.owner = owner }
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        guard message.name == "mode",
+              let mode = message.body as? String else { return }
+
+        let isRookie = (mode == "rookie")
+        UserDefaults.standard.set(isRookie, forKey: "lastMode")
+        UserManager.shared.isRookieMode = isRookie
+
+        print("🎮 ModeBridge: Detected mode =", mode)
     }
 }
 
