@@ -78,9 +78,9 @@ private let tabMap: [BottomTabItem] = [
 
 // MARK: - When to show the bottom tabs
 private let allowedExactURLs: [String] = [
-    "https://game.playbracco.com/en"
+    "https://mobile.playbracco.com/en"
 ]
-private let allowedHost = "game.playbracco.com"
+private let allowedHost = "mobile.playbracco.com"
 private let allowedPathPrefixes: [String] = [
     "/en"
 ]

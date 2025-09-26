@@ -955,7 +955,7 @@ class WebViewController: UIViewController, OSSubscriptionObserver, GADBannerView
         // Inject CSS/JS to hide specific elements on Account Settings pages
         let accountHideJS = """
         (function() {
-          var ALLOWED_HOST = "game.playbracco.com";
+          var ALLOWED_HOST = "mobile.playbracco.com";
           var PATH_MATCHES = ["/my-account", "/account", "/settings"];
 
           function onTargetPage() {
