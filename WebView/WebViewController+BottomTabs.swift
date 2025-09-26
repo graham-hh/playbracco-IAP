@@ -586,6 +586,25 @@ extension WebViewController: UITabBarDelegate {
         })();
         """
         webView.evaluateJavaScript(detectModeHeaderJS, completionHandler: nil)
+
+        // Inject JS to detect login state from header and send to iOS app (quick retrying header detector)
+        let detectLoginHeaderJS = """
+        (function() {
+          function detectLoginFromHeader() {
+            var loginBtn = document.querySelector('button[data-testid="login-button"]');
+            var loggedIn = !(loginBtn && loginBtn.innerText && loginBtn.innerText.toLowerCase().includes('log in'));
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.login) {
+              window.webkit.messageHandlers.login.postMessage(loggedIn ? "loggedIn" : "loggedOut");
+            }
+            console.log("✅ Login header detected:", loggedIn ? "loggedIn" : "loggedOut");
+          }
+          detectLoginFromHeader();
+          if (!window.__loginHeaderInterval__) {
+            window.__loginHeaderInterval__ = setInterval(detectLoginFromHeader, 400); // quick retry
+          }
+        })();
+        """
+        webView.evaluateJavaScript(detectLoginHeaderJS, completionHandler: nil)
         // Always register the "pageChanged" script message handler here
         let ucc = webView.configuration.userContentController
         ucc.removeScriptMessageHandler(forName: "pageChanged")
@@ -632,6 +651,11 @@ extension WebViewController: UITabBarDelegate {
                 item.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -2)
             }
             items.append(item)
+        }
+        // Hide Shop tab if user is not logged in
+        let isLoggedIn = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        if !isLoggedIn {
+            items = items.filter { $0.title != "Shop" }
         }
         bar.items = items
         bar.selectedItem = items.first
