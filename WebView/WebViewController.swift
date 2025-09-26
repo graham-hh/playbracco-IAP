@@ -5471,19 +5471,23 @@ private func addWebViewToMainView(_ webView: WKWebView)
         installCoinsHiderUserScript(on: webView)
         installStatusBarSafeAreaStyle(on: webView)
         // Register script message handlers using dedicated bridge classes
+        // Always remove any existing script message handlers before adding new ones
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "flutter_inappwebview")
         let balanceProxy = BalanceUpdateProxy(owner: self)
         setAssoc(self, &_balanceProxyKey, balanceProxy)
         webView.configuration.userContentController.add(balanceProxy, name: "flutter_inappwebview")
 
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "afBridge")
         let afHandler = AFBridgeHandler(owner: self)
         setAssoc(self, &_afHandlerKey, afHandler)
         webView.configuration.userContentController.add(afHandler, name: "afBridge")
 
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "mode")
         let modeBridge = ModeBridge(owner: self)
         setAssoc(self, &_modeBridgeKey, modeBridge)
         webView.configuration.userContentController.add(modeBridge, name: "mode")
 
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "login")
         let loginBridge = LoginBridge(owner: self)
         setAssoc(self, &_loginBridgeKey, loginBridge)
         webView.configuration.userContentController.add(loginBridge, name: "login")

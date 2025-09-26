@@ -49,6 +49,8 @@ private var _lastOffsetYKey: UInt8    = 0
 private var _modalPollTimerKey: UInt8 = 0
 private var _lastSelectedIndexKey: UInt8 = 0
 var _pageChangedBridgeKey: UInt8 = 0
+private var _modeBridgeKey: UInt8 = 0
+private var _loginBridgeKey: UInt8 = 0
 
 // Helpers
 func getAssoc(_ obj: AnyObject, _ key: UnsafeRawPointer) -> Any? {
@@ -604,12 +606,12 @@ extension WebViewController: UITabBarDelegate {
         // Always remove before adding (idempotent)
         ucc.removeScriptMessageHandler(forName: "mode")
         let modeBridge = ModeBridge(owner: self)
-        setAssoc(self, &_pageChangedBridgeKey, modeBridge) // reuse key or create new if needed
+        setAssoc(self, &_modeBridgeKey, modeBridge)
         ucc.add(modeBridge, name: "mode")
 
         ucc.removeScriptMessageHandler(forName: "login")
         let loginBridge = LoginBridge(owner: self)
-        setAssoc(self, &_pageChangedBridgeKey, loginBridge) // you can create a new assoc key if you want
+        setAssoc(self, &_loginBridgeKey, loginBridge)
         ucc.add(loginBridge, name: "login")
 
 
